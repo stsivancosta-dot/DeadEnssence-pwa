@@ -1,0 +1,320 @@
+
+/* =======================================
+   1. VARIÁVEIS GLOBAIS
+======================================== */
+
+:root {
+  --fundo: #070b10;
+  --painel: #0e151d;
+  --borda: #1f3342;
+  --texto: #e4eef3;
+  --suave: #8aa2b0;
+  --ciano: #3fd0ee;
+  --menu-altura: 60px;
+
+  color-scheme: dark;
+}
+
+/* ========================================
+   2. RESET E CONFIGURAÇÕES GERAIS
+======================================== */
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: var(--fundo);
+  color: var(--texto);
+  font: 16px/1.5 system-ui, "Segoe UI", Roboto, sans-serif;
+}
+
+/* ========================================
+   3. ELEMENTOS HTML
+======================================== */
+
+a {
+  color: var(--ciano);
+}
+
+a:focus-visible {
+  outline: 2px solid var(--ciano);
+  outline-offset: 2px;
+}
+
+h1 {
+  margin: 0 0 0.5rem;
+  font-size: 1.6rem;
+}
+
+h2 {
+  margin: 1.5rem 0 0.6rem;
+  color: var(--suave);
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+p {
+  max-width: 70ch;
+  margin: 0 0 0.75rem;
+}
+
+/* ========================================
+   4. CLASSES UTILITÁRIAS
+======================================== */
+
+.suave {
+  color: var(--suave);
+}
+
+.rotulo {
+  color: var(--suave);
+  font-size: 0.875rem;
+}
+
+.valor {
+  font-size: 1.6rem;
+  line-height: 1.2;
+}
+
+.trilha {
+  color: var(--suave);
+  font-size: 0.875rem;
+}
+
+/* ========================================
+   5. ESTRUTURA PRINCIPAL DO APLICATIVO
+======================================== */
+
+.app {
+  display: grid;
+  grid-template-columns: 220px 1fr;
+  grid-template-rows: auto 1fr auto;
+  grid-template-areas:
+    "topo topo"
+    "menu conteudo"
+    "rodape rodape";
+  min-height: 100vh;
+}
+
+/* Cabeçalho */
+
+.topo {
+  grid-area: topo;
+  padding: 0.9rem 1.25rem;
+  border-bottom: 1px solid var(--borda);
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+/* Menu de navegação */
+
+.menu {
+  display: flex;
+  grid-area: menu;
+  flex-direction: column;
+  gap: 0.25rem;
+  padding: 1rem 0.75rem;
+  border-right: 1px solid var(--borda);
+}
+
+.menu a {
+  padding: 0.6rem 0.75rem;
+  border-radius: 6px;
+  color: var(--suave);
+  text-decoration: none;
+}
+
+.menu a:hover {
+  color: var(--texto);
+}
+
+.menu a[aria-current="page"] {
+  background: var(--painel);
+  color: var(--texto);
+  box-shadow: inset 3px 0 var(--ciano);
+}
+
+.menu .curto {
+  display: none;
+}
+
+/* Conteúdo principal */
+
+.conteudo {
+  grid-area: conteudo;
+  min-width: 0;
+  padding: 1.5rem 1.25rem;
+}
+
+/* Rodapé */
+
+.rodape {
+  grid-area: rodape;
+  padding: 0.75rem 1.25rem;
+  border-top: 1px solid var(--borda);
+  color: var(--suave);
+  font-size: 0.875rem;
+}
+
+/* ========================================
+   6. GRIDS E ORGANIZAÇÃO DOS CONTEÚDOS
+======================================== */
+
+.grade {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+  gap: 0.75rem;
+}
+
+.duas {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 1rem;
+}
+
+.grade + p {
+  margin-top: 1rem;
+}
+
+/* ========================================
+   7. PAINÉIS E CARTÕES
+======================================== */
+
+.painel {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  padding: 0.85rem 1rem;
+  border: 1px solid var(--borda);
+  border-radius: 8px;
+  background: var(--painel);
+}
+
+.duas .painel {
+  display: block;
+}
+
+.duas .painel h2 {
+  margin-top: 0;
+}
+
+a.painel {
+  color: var(--texto);
+  text-decoration: none;
+}
+
+a.painel:hover {
+  border-color: var(--ciano);
+}
+
+.cartao {
+  max-width: 520px;
+}
+
+/* ========================================
+   8. BARRAS DE PROGRESSO
+======================================== */
+
+.barra {
+  height: 6px;
+  margin-top: 0.35rem;
+  overflow: hidden;
+  border-radius: 3px;
+  background: var(--borda);
+}
+
+.barra i {
+  display: block;
+  height: 100%;
+  background: var(--ciano);
+}
+
+/* ========================================
+   9. ETIQUETAS E ESTADOS VAZIOS
+======================================== */
+
+.etiqueta {
+  margin-left: 0.35rem;
+  padding: 0.05rem 0.5rem;
+  border: 1px solid var(--ciano);
+  border-radius: 999px;
+  color: var(--ciano);
+  font-size: 0.75rem;
+  font-weight: 400;
+  vertical-align: middle;
+}
+
+.vazio {
+  padding: 0.85rem 1rem;
+  border: 1px dashed var(--borda);
+  border-radius: 8px;
+  color: var(--suave);
+}
+
+/* ========================================
+   10. RESPONSIVIDADE PARA CELULARES
+======================================== */
+
+@media (max-width: 819px) {
+  /* Estrutura principal */
+
+  .app {
+    display: block;
+    padding-bottom: calc(
+      var(--menu-altura) + env(safe-area-inset-bottom, 0px)
+    );
+  }
+
+  /* Menu inferior fixo */
+
+  .menu {
+    position: fixed;
+    inset: auto 0 0 0;
+    z-index: 10;
+    flex-direction: row;
+    justify-content: space-around;
+    gap: 0;
+    padding: 0 0 env(safe-area-inset-bottom, 0px);
+    border: 0;
+    border-top: 1px solid var(--borda);
+    background: var(--painel);
+  }
+
+  .menu a {
+    display: grid;
+    flex: 1;
+    place-items: center;
+    min-height: var(--menu-altura);
+    border-radius: 0;
+  }
+
+  .menu a[aria-current="page"] {
+    box-shadow: inset 0 3px var(--ciano);
+  }
+
+  /* Alternância dos textos do menu */
+
+  .menu .longo {
+    display: none;
+  }
+
+  .menu .curto {
+    display: inline;
+  }
+
+  /* Grade de cartões */
+
+  .grade {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  /* Cabeçalho com área segura do celular */
+
+  .topo {
+    padding-top: calc(
+      0.9rem + env(safe-area-inset-top, 0px)
+    );
+  }
+}

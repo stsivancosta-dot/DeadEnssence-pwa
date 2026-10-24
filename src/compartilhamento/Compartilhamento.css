@@ -1,0 +1,27 @@
+/* Usa as variáveis do tema do app quando existirem; senão, cai nos padrões escuros. */
+.de-bloco { display: grid; gap: 0.75rem; }
+.de-acoes { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+.de-bloco button {
+  min-height: 44px; /* alvo de toque confortável no celular */
+  padding: 0 1rem;
+  border: 1px solid var(--de-borda, #2b6f86);
+  border-radius: 6px;
+  background: var(--de-painel, #0d1b24);
+  color: var(--de-texto, #e6f4f8);
+  font: inherit;
+  cursor: pointer;
+}
+.de-bloco button:hover:not(:disabled) { border-color: var(--de-destaque, #3ac8e8); }
+.de-bloco button:focus-visible { outline: 2px solid var(--de-destaque, #3ac8e8); outline-offset: 2px; }
+.de-bloco button:disabled { opacity: 0.5; cursor: not-allowed; }
+.de-previa {
+  display: grid; gap: 0.5rem; padding: 0.75rem;
+  border: 1px solid var(--de-borda, #2b6f86); border-radius: 6px;
+  background: var(--de-painel, #0d1b24); color: var(--de-texto, #e6f4f8);
+}
+.de-previa p { margin: 0; }
+.de-confirmar { display: flex; gap: 0.5rem; align-items: center; }
+.de-msg { margin: 0; padding: 0.5rem 0.75rem; border-left: 3px solid var(--de-borda, #2b6f86); }
+.de-msg--ok { border-left-color: #4cc38a; }
+.de-msg--erro { border-left-color: #e5645a; }
+ 
