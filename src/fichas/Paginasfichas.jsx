@@ -1,4 +1,4 @@
-import { ATRIBUTOS, RACAS, fichaNova } from './Ficha.js';
+import { ATRIBUTOS, RACAS, fichaNova } from '../modelos/Ficha.js';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import {
   atualizarFicha,
@@ -7,7 +7,7 @@ import {
   listarFichas,
   obterFicha,
   pedirPersistencia
-} from './Banco.js';
+} from '../dados/Banco.js';
 import './Fichas.css';
 
 const nomeDe = (f) => f.nome.trim() || '(sem nome)';

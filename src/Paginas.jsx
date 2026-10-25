@@ -1,5 +1,5 @@
 import { notasExemplo } from './dadosexemplos.js';
-import { PersonagensRecentes } from './Paginasfichas.jsx';
+import { PersonagensRecentes } from './fichas/Paginasfichas.jsx';
 
 const Exemplo = () => <span className="etiqueta">Exemplo</span>;
 

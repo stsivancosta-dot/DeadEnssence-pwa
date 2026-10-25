@@ -1,5 +1,46 @@
 Guia completo de Git e GitHub — criar, editar e sincronizar projetos
 Este guia é focado apenas no Git e GitHub, desde a criação de um repositório até o ciclo diário de edição, incluindo como trabalhar em dois computadores. Os comandos são para o PowerShell no Windows e o terminal do VS Code.
+
+TREE da commit mais recente:
+
+ens/
+├── index.html
+├── package.json                       ← minúscula
+├── package-lock.json
+├── vite.config.js
+├── README.md
+├── .gitignore
+├── CNAME
+├── public/                            ← MOVER para a raiz
+│   ├── favicon.svg
+│   ├── apple-touch-icon.png           ← .png, não .svg
+│   ├── pwa-192x192.png
+│   ├── pwa-512x512.png
+│   └── maskable-512x512.png           ← corrigir o nome
+├── scripts/                           ← CRIAR (ainda não existe)
+│   └── verificar-pwa.mjs
+└── src/
+    ├── main.jsx
+    ├── App.jsx                        ← app.jsx
+    ├── paginas.jsx                    ← Paginas.jsx
+    ├── dadosExemplo.js                ← dadosexemplos.js
+    ├── estilo.css                     ← estilos.css
+    ├── dados/
+    │   └── banco.js                   ← Banco.js
+    ├── modelos/
+    │   └── ficha.js                   ← Ficha.js
+    ├── fichas/
+    │   ├── PaginasFichas.jsx          ← Paginasfichas.jsx
+    │   └── fichas.css                 ← Fichas.css
+    └── compartilhamento/
+        ├── CompartilhamentoUI.jsx     ← Compartilhamentoui.jsx
+        ├── compartilhamento.css       ← Compartilhamento.css
+        ├── fichas.js                  ← Fichas.js
+        ├── backup.js                  ← Backup.js
+        └── formatos.js                ← Formatos.js
+
+
+
 1. Tabela de comandos essenciais
 Comando	Para que serve	Quando usar
 git --version	Verifica se o Git está instalado	Primeira utilização

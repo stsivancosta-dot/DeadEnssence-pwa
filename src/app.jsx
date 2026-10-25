@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Dashboard, Anotacoes, Rolagens } from './paginas.jsx';
-import { Personagens, Ficha } from "./Paginasfichas.jsx";
+import { Personagens, Ficha } from "./fichas/Paginasfichas.jsx";
 
 const ITENS = [
   { id: 'inicio', longo: 'Início', curto: 'Início' },
