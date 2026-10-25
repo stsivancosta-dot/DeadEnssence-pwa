@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
-import { Dashboard, Personagens, Ficha, Anotacoes, Rolagens } from './Paginas.jsx';
+import { Dashboard, Anotacoes, Rolagens } from './paginas.jsx';
+import { Personagens, Ficha } from "./Paginasfichas.jsx";
 
 const ITENS = [
   { id: 'inicio', longo: 'Início', curto: 'Início' },
@@ -26,7 +27,7 @@ export default function App() {
   const ativa = ITENS.some((i) => i.id === secao) ? secao : 'inicio';
 
   let pagina = <Dashboard />;
-  if (secao === 'personagens') pagina = sub ? <Ficha /> : <Personagens />;
+  if (secao === 'personagens') pagina = sub ? <Ficha key={sub} id={sub} /> : <Personagens />;
   else if (secao === 'anotacoes') pagina = <Anotacoes />;
   else if (secao === 'rolagens') pagina = <Rolagens />;
 
@@ -42,7 +43,7 @@ export default function App() {
         ))}
       </nav>
       <main className="conteudo">{pagina}</main>
-      <footer className="rodape">Etapa 1: só a estrutura visual. Nada é salvo neste dispositivo ainda.</footer>
+      <footer className="rodape">As fichas ficam salvas só neste dispositivo; não há sincronização entre aparelhos.</footer>
     </div>
   );
 }

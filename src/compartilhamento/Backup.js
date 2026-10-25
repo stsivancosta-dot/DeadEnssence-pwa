@@ -8,7 +8,7 @@
 //   gravarPreferencias(obj)  (opcional)
 // criarArmazenamentoIndexedDB() abaixo implementa esse contrato.
 
-import { montarEnvelopeBackup, validarEnvelopeBackup } from './Formatos.js';
+import { montarEnvelopeBackup, validarEnvelopeBackup } from './formatos.js';
 
 const contar = (dados) => Object.fromEntries(Object.entries(dados).map(([nome, regs]) => [nome, regs.length]));
 
@@ -84,7 +84,7 @@ export function criarArmazenamentoIndexedDB(db, nomesDasStores, { lerPreferencia
         if (nomes.length === 0) return resolve();
         const tx = db.transaction(nomes, 'readwrite');
         tx.oncomplete = () => resolve();
-        tx.onerror = () => reject(tx.error);
+        tx.onerror = (ev) => reject(ev.target?.error ?? tx.error ?? new Error('Falha ao gravar.'));
         tx.onabort = () => reject(tx.error || new Error('Transação cancelada.'));
         try {
           for (const nome of nomes) {

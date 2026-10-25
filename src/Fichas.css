@@ -1,0 +1,22 @@
+.campo { display: flex; flex-direction: column; gap: .25rem; }
+.campo input, .campo select {
+  min-height: 44px; padding: 0 .6rem; background: var(--fundo); color: var(--texto);
+  border: 1px solid var(--borda); border-radius: 6px; font: inherit; width: 100%;
+}
+.campo input:focus-visible, .campo select:focus-visible { outline: 2px solid var(--ciano); outline-offset: 1px; }
+.par { margin: 0; min-width: 0; }
+.par legend { padding: 0 .25rem; }
+.duplo { display: grid; grid-template-columns: 1fr 1fr; gap: .5rem; margin-top: .5rem; }
+.lista { display: grid; gap: .75rem; max-width: 520px; }
+.acoes { display: flex; flex-wrap: wrap; gap: .5rem; margin-top: .25rem; }
+.btn {
+  display: inline-flex; align-items: center; min-height: 44px; padding: 0 1rem; background: var(--painel);
+  color: var(--texto); border: 1px solid var(--ciano); border-radius: 6px; font: inherit; text-decoration: none; cursor: pointer;
+}
+.btn:hover { background: var(--borda); }
+.btn:focus-visible { outline: 2px solid var(--ciano); outline-offset: 2px; }
+.btn.perigo { border-color: #e5645a; }
+.estado { font-size: .875rem; margin-bottom: 0; }
+.estado--salvo { color: #4cc38a; }
+.estado--salvando { color: var(--suave); }
+.estado--erro { color: #e5645a; }

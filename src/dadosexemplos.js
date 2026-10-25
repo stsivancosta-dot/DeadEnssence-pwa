@@ -12,6 +12,7 @@ export const personagemExemplo = {
   fluxo: 0,
 };
 
+// DADOS DE EXEMPLO: só para mostrar a interface. Não são registros do jogador.
 export const notasExemplo = [
   { id: 'n1', titulo: 'Pistas da sessão' },
   { id: 'n2', titulo: 'NPCs importantes' },
