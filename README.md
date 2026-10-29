@@ -3,41 +3,7 @@ Este guia é focado apenas no Git e GitHub, desde a criação de um repositório
 
 TREE da commit mais recente:
 
-ens/
-├── index.html
-├── package.json                       ← minúscula
-├── package-lock.json
-├── vite.config.js
-├── README.md
-├── .gitignore
-├── CNAME
-├── public/                            ← MOVER para a raiz
-│   ├── favicon.svg
-│   ├── apple-touch-icon.png           ← .png, não .svg
-│   ├── pwa-192x192.png
-│   ├── pwa-512x512.png
-│   └── maskable-512x512.png           ← corrigir o nome
-├── scripts/                           ← CRIAR (ainda não existe)
-│   └── verificar-pwa.mjs
-└── src/
-    ├── main.jsx
-    ├── App.jsx                        ← app.jsx
-    ├── paginas.jsx                    ← Paginas.jsx
-    ├── dadosExemplo.js                ← dadosexemplos.js
-    ├── estilo.css                     ← estilos.css
-    ├── dados/
-    │   └── banco.js                   ← Banco.js
-    ├── modelos/
-    │   └── ficha.js                   ← Ficha.js
-    ├── fichas/
-    │   ├── PaginasFichas.jsx          ← Paginasfichas.jsx
-    │   └── fichas.css                 ← Fichas.css
-    └── compartilhamento/
-        ├── CompartilhamentoUI.jsx     ← Compartilhamentoui.jsx
-        ├── compartilhamento.css       ← Compartilhamento.css
-        ├── fichas.js                  ← Fichas.js
-        ├── backup.js                  ← Backup.js
-        └── formatos.js                ← Formatos.js
+
 
 
 
@@ -208,3 +174,99 @@ Branch	Uma linha separada de desenvolvimento
 Merge	Integra alterações de uma branch a outra
 Conflito	Situação em que o Git precisa que você escolha como combinar alterações incompatíveis
 .gitignore	Arquivo que indica quais arquivos o Git deve ignorar, como node_modules/ e .env
+
+surge
+
+Claro! Como seu PWA usa uma pasta `dist` para publicação no Surge.sh, o segredo é entender que desenvolver, compilar e publicar são três etapas diferentes. Foi justamente essa separação que provavelmente causou seu último problema: você publicou sem gerar uma nova versão da compilação.
+
+# 1. Ciclo de criação de um PWA com Surge.sh
+
+Esta tabela serve para quando você começar um projeto do zero, usando ferramentas como Vite, React ou JavaScript.
+
+| Etapa                    | O que fazer                                            | Comando ou ação                     |
+| ------------------------ | ------------------------------------------------------ | ----------------------------------- |
+| 1. Criar o projeto       | Preparar os arquivos iniciais e a estrutura do PWA.    | Criar o projeto e seus arquivos.    |
+| 2. Instalar dependências | Instalar as bibliotecas necessárias.                   | `npm install`                       |
+| 3. Desenvolver           | Escrever o HTML, CSS e JavaScript.                     | Editar os arquivos-fonte.           |
+| 4. Testar localmente     | Conferir se o aplicativo funciona antes de publicar.   | `npm run dev`                       |
+| 5. Compilar              | Gerar a versão final otimizada do aplicativo.          | `npm run build`                     |
+| 6. Conferir a compilação | Verificar se a pasta de saída foi criada corretamente. | Conferir a pasta `dist`.            |
+| 7. Publicar              | Enviar a versão compilada para o Surge.                | `surge ./dist SEU-DOMINIO.surge.sh` |
+| 8. Verificar             | Abrir o site e testar os recursos do PWA.              | Acessar o domínio publicado.        |
+
+No Vite, o comando `npm run build` normalmente gera os arquivos de produção na pasta `dist`. O Surge publica os arquivos dessa pasta, mas não faz a compilação por conta própria.
+
+
+# 2. Ciclo de atualização do PWA
+
+Esta será sua rotina normal sempre que modificar o projeto.
+
+| Ordem | Etapa                            | O que fazer                                                                                                 |
+| ----- | -------------------------------- | ----------------------------------------------------------------------------------------------------------- |
+| 1     | Editar                           | Modificar os arquivos-fonte do projeto.                                                                     |
+| 2     | Testar                           | Executar `npm run dev` se precisar conferir as alterações localmente.                                       |
+| 3     | Recompilar                       | Executar `npm run build`. Esta etapa é obrigatória quando você quer publicar as alterações do código-fonte. |
+| 4     | Conferir                         | Verificar se a compilação terminou sem erros e atualizou `dist`.                                            |
+| 5     | Publicar                         | Executar o comando do Surge usando a mesma pasta e o mesmo domínio.                                         |
+| 6     | Confirmar                        | Verificar se o terminal exibiu `Success! - Published to ...`.                                               |
+| 7     | Testar online                    | Abrir o site e confirmar se as alterações estão funcionando.                                                |
+| 8     | Verificar o cache, se necessário | Se o site continuar antigo, testar em janela anônima e investigar o service worker.                         |
+
+## 3. Seus comandos do dia a dia
+
+Sempre que terminar uma alteração, abra o PowerShell na pasta principal do projeto — aquela que contém o `package.json` — e siga esta sequência.
+
+1\. Testar localmente (opcional)
+
+```
+npm run dev
+```
+
+Abra o endereço local informado pelo Vite e confira as alterações.
+
+Copiar
+
+2\. Compilar
+
+```
+npm run build
+```
+
+Espere a compilação terminar. Se houver erro, corrija-o antes de publicar.
+
+Copiar
+
+3\. Publicar
+
+```
+surge ./dist SEU-DOMINIO.surge.sh
+```
+
+Troque o domínio de exemplo pelo endereço real do seu PWA e mantenha-o nas atualizações seguintes.
+
+Copiar
+
+Você não precisa executar `npm install` em toda atualização. Ele costuma ser necessário na criação inicial do projeto ou quando as dependências mudam.
+
+# 4. O que conferir quando o site não atualizar
+
+| Sintoma                                                   | Causa provável                                                         | O que fazer                                                        |
+| --------------------------------------------------------- | ---------------------------------------------------------------------- |--------------------------------------------------------------------|
+| O site continua antigo após publicar.                     | A compilação foi esquecida ou a pasta publicada é antiga.              | Execute `npm run build` e publique novamente.                      |                                  
+| A compilação falhou.                                      | Existe um erro no código ou na configuração.                           | Corrija o erro antes de publicar.                                  |
+| O Surge mostra sucesso, mas o navegador continua antigo.  | Cache do navegador ou do PWA.                                          | Teste em janela anônima e verifique o service worker.              |
+| O site fica em branco ou faltam imagens.                  | Arquivos ausentes ou configuração de caminhos incorreta.               | Confira a estrutura de `dist` e os caminhos dos recursos.          |
+| As alterações aparecem no computador, mas não no celular. | Cache, service worker ou dispositivo ainda usando uma versão anterior. | Teste a atualização no celular e verifique o comportamento do PWA. |
+
+O Surge confirma a publicação quando termina com sucesso; se a publicação estiver correta, mas o PWA mostrar conteúdo antigo, o service worker pode precisar atualizar a versão em cache. A forma de fazer isso depende de como o projeto configura o service worker.
+
+
+## 5. Duas regras importantes para não ter dor de cabeça
+
+Regra 1 — Não edite diretamente a pasta `dist`. Edite os arquivos-fonte. A compilação pode recriar `dist` e apagar alterações manuais feitas nela.
+
+Regra 2 — Não confunda publicação com atualização do cache. Publicar envia os arquivos para o servidor; o service worker controla como o PWA atualiza e utiliza os recursos armazenados localmente. Se você usa um service worker gerado pelo Vite ou por um plugin PWA, confira sua configuração antes de alterar manualmente as versões de cache.
+
+Para memorizar: editar → testar → `npm run build` → publicar a `dist` → conferir o site.
+
+Esse é o ciclo que vale seguir sempre que você for atualizar seu PWA no Surge.sh.
