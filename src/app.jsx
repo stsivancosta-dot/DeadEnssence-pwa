@@ -1,6 +1,7 @@
+import { Rolagens } from './rolagens/PaginaRolagens.jsx';
 import { useEffect, useState } from 'react';
-import { Dashboard, Anotacoes, Rolagens } from './paginas.jsx';
-import { Personagens, Ficha } from "./fichas/Paginasfichas.jsx";
+import { Dashboard, Anotacoes } from './paginas.jsx';
+import { Personagens, Ficha } from './fichas/PaginasFichas.jsx';
 
 const ITENS = [
   { id: 'inicio', longo: 'Início', curto: 'Início' },

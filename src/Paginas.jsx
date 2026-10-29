@@ -1,5 +1,5 @@
-import { notasExemplo } from './dadosexemplos.js';
-import { PersonagensRecentes } from './fichas/Paginasfichas.jsx';
+import { notasExemplo } from './dadosExemplo.js';
+import { PersonagensRecentes } from './fichas/PaginasFichas.jsx';
 
 const Exemplo = () => <span className="etiqueta">Exemplo</span>;
 
@@ -7,7 +7,7 @@ export function Dashboard() {
   return (
     <>
       <h1>Seu espaço de jogo</h1>
-      <p className="suave">As fichas já são salvas neste aparelho. Anotações e rolagens ainda são só estrutura.</p>
+      <p className="suave">Fichas e rolagens já são salvas neste aparelho. As anotações ainda são só estrutura.</p>
       <div className="grade">
         <a className="painel atalho" href="#/personagens"><strong>Personagens</strong><span className="suave">Fichas do seu grupo</span></a>
         <a className="painel atalho" href="#/anotacoes"><strong>Anotações</strong><span className="suave">Textos e pistas</span></a>
@@ -36,26 +36,6 @@ export function Anotacoes() {
           <p className="vazio">O editor de texto chega na Etapa 3.</p>
         </section>
       </div>
-    </>
-  );
-}
-
-export function Rolagens() {
-  return (
-    <>
-      <h1>Rolagens e testes</h1>
-      <div className="duas">
-        <section className="painel">
-          <h2>Rolagem simples</h2>
-          <p className="vazio">Chega na Etapa 4: escolher o dado, rolar e ver cada resultado.</p>
-        </section>
-        <section className="painel">
-          <h2>Teste</h2>
-          <p className="vazio">Chega na Etapa 4: D20 individuais, pontos de Fluxo e proficiência.</p>
-        </section>
-      </div>
-      <h2>Histórico de rolagens</h2>
-      <p className="vazio">Nenhuma rolagem registrada.</p>
     </>
   );
 }

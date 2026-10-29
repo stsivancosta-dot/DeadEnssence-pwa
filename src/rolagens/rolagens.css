@@ -1,0 +1,124 @@
+.contador {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.contador output {
+  min-width: 2.5rem;
+  text-align: center;
+  font-size: 1.4rem;
+  font-weight: 700;
+}
+
+.contador .btn {
+  min-width: 44px;
+  justify-content: center;
+}
+
+.grupo-dados {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.grupo-dados button[aria-pressed="true"] {
+  background: var(--ciano);
+  color: var(--fundo);
+}
+
+.dados {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin: 0.5rem 0;
+}
+
+.dado {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  min-width: 52px;
+  min-height: 52px;
+  padding: 0.15rem 0.5rem;
+
+  background: var(--fundo);
+  color: var(--texto);
+  border: 1px solid var(--borda);
+  border-radius: 8px;
+
+  font: inherit;
+  font-size: 1.25rem;
+  font-weight: 700;
+}
+
+button.dado {
+  cursor: pointer;
+}
+
+button.dado:focus-visible {
+  outline: 2px solid var(--ciano);
+  outline-offset: 2px;
+}
+
+.dado.maior {
+  border-color: var(--ciano);
+}
+
+.dado.escolhido {
+  background: var(--ciano);
+  color: var(--fundo);
+}
+
+.dado .marca {
+  font-size: 0.65rem;
+  font-weight: 400;
+}
+
+.resultado {
+  margin-top: 0.75rem;
+}
+
+.resultado p {
+  margin: 0.25rem 0;
+}
+
+.total {
+  font-size: 1.15rem;
+  font-weight: 700;
+}
+
+.opcao {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin: 0.5rem 0;
+}
+
+.historico {
+  display: grid;
+  gap: 0.5rem;
+
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.historico li {
+  padding: 0.6rem 0.8rem;
+  border: 1px solid var(--borda);
+  border-radius: 8px;
+  background: var(--painel);
+}
+
+.historico .suave {
+  font-size: 0.875rem;
+}
+
+.duas .painel .campo,
+.duas .painel .grupo-dados,
+.duas .painel .acoes {
+  margin-top: 0.75rem;
+}
