@@ -1,6 +1,7 @@
-import { Rolagens } from './rolagens/PaginaRolagens.jsx';
 import { useEffect, useState } from 'react';
-import { Dashboard, Anotacoes } from './paginas.jsx';
+import { Dashboard } from './paginas.jsx';
+import { Anotacoes, Nota } from "./dados/Notas/PaginaNotas.jsx";
+import { Rolagens } from './rolagens/PaginaRolagens.jsx';
 import { Personagens, Ficha } from './fichas/PaginasFichas.jsx';
 
 const ITENS = [
@@ -29,7 +30,7 @@ export default function App() {
 
   let pagina = <Dashboard />;
   if (secao === 'personagens') pagina = sub ? <Ficha key={sub} id={sub} /> : <Personagens />;
-  else if (secao === 'anotacoes') pagina = <Anotacoes />;
+  else if (secao === 'anotacoes') pagina = sub ? <Nota key={sub} id={sub} /> : <Anotacoes />;
   else if (secao === 'rolagens') pagina = <Rolagens />;
 
   return (

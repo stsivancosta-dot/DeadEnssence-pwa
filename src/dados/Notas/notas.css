@@ -1,0 +1,306 @@
+/* ========================================
+   TOPO DAS ANOTAÇÕES
+======================================== */
+
+.nota-topo input {
+  font-size: 1.15rem;
+  font-weight: 600;
+}
+
+/* ========================================
+   BARRA DE FERRAMENTAS
+======================================== */
+
+.nota-barra {
+  position: sticky;
+  top: 0;
+  z-index: 5;
+
+  display: flex;
+  gap: 0.75rem;
+  overflow-x: auto;
+
+  padding: 0.4rem;
+
+  background: var(--painel);
+  border: 1px solid var(--borda);
+  border-radius: 8px;
+}
+
+.nota-grupo {
+  display: flex;
+  flex: none;
+  gap: 0.25rem;
+
+  padding-right: 0.75rem;
+  border-right: 1px solid var(--borda);
+}
+
+.nota-grupo:last-child {
+  padding-right: 0;
+  border-right: 0;
+}
+
+/* Botões de formatação */
+
+.nota-botao {
+  display: inline-grid;
+  place-items: center;
+
+  min-width: 44px;
+  min-height: 44px;
+
+  background: transparent;
+  color: var(--texto);
+
+  border: 1px solid transparent;
+  border-radius: 6px;
+
+  font: inherit;
+  cursor: pointer;
+}
+
+.nota-botao:hover {
+  border-color: var(--borda);
+}
+
+.nota-botao[aria-pressed="true"] {
+  background: var(--ciano);
+  color: var(--fundo);
+}
+
+/* Indicadores de foco */
+
+.nota-botao:focus-visible,
+.cor:focus-visible {
+  outline: 2px solid var(--ciano);
+  outline-offset: 2px;
+}
+
+/* Ícones de formatação */
+
+.nota-cor-ico {
+  padding: 0 2px;
+
+  border-bottom: 4px solid currentColor;
+
+  font-weight: 700;
+  line-height: 1;
+}
+
+.nota-marca-ico {
+  padding: 0 3px;
+
+  background: rgba(245, 204, 5, 0.55);
+  color: var(--texto);
+
+  border-radius: 2px;
+  font-weight: 600;
+}
+
+.nota-botao[aria-pressed="true"] .nota-marca-ico {
+  color: var(--fundo);
+}
+
+/* ========================================
+   PALETA DE CORES
+======================================== */
+
+.paleta {
+  display: grid;
+  grid-template-columns: repeat(7, 40px);
+  gap: 0.4rem;
+
+  width: max-content;
+  max-width: 100%;
+
+  margin: 0.5rem 0;
+  padding: 0.5rem;
+
+  background: var(--painel);
+  border: 1px solid var(--borda);
+  border-radius: 8px;
+}
+
+.cor {
+  width: 40px;
+  height: 40px;
+
+  border: 2px solid var(--borda);
+  border-radius: 6px;
+
+  cursor: pointer;
+}
+
+.cor[aria-pressed="true"] {
+  border-color: var(--texto);
+  box-shadow: 0 0 0 2px var(--ciano);
+}
+
+/* ========================================
+   FOLHA DE ANOTAÇÕES
+======================================== */
+
+/*
+ * A folha possui fundo claro para manter a
+ * legibilidade das cores escolhidas, inclusive
+ * do texto preto.
+ */
+
+.nota-folha {
+  margin-top: 0.75rem;
+
+  background: #fafbfc;
+  border: 1px solid var(--borda);
+  border-radius: 8px;
+}
+
+/* Editor de texto */
+
+.nota-editor {
+  min-height: 50vh;
+  padding: 1rem 1.1rem;
+
+  color: #1b1f24;
+  outline: none;
+
+  font: 16px/1.6 Inter, "Segoe UI", system-ui,
+    -apple-system, Roboto, sans-serif;
+
+  overflow-wrap: anywhere;
+}
+
+.nota-editor:focus-visible {
+  box-shadow: inset 0 0 0 2px var(--ciano);
+  border-radius: 8px;
+}
+
+/* Parágrafos e blocos internos */
+
+.nota-editor p,
+.nota-editor div {
+  max-width: none;
+  margin: 0 0 0.5em;
+}
+
+/* ========================================
+   MENSAGENS E ESTADOS
+======================================== */
+
+.nota-dica {
+  font-size: 0.875rem;
+}
+
+.nota-msg {
+  padding: 0.5rem 0.75rem;
+  border-left: 3px solid var(--borda);
+}
+
+.nota-msg--ok {
+  border-left-color: #4cc38a;
+}
+
+.nota-msg--erro {
+  border-left-color: #e5645a;
+}
+
+.nota-previa {
+  overflow-wrap: anywhere;
+}
+
+/* Avisos de conflito */
+
+.nota-conflito {
+  max-width: 640px;
+  margin: 0.75rem 0;
+}
+
+/* Conteúdo exclusivo para impressão */
+
+.so-impressao {
+  display: none;
+}
+
+/* ========================================
+   MODO DE IMPRESSÃO
+======================================== */
+
+@media print {
+  /* Oculta controles e elementos de navegação */
+
+  .topo,
+  .menu,
+  .rodape,
+  .trilha,
+  .nota-topo,
+  .estado,
+  .nota-barra,
+  .paleta,
+  .nota-acoes,
+  .nota-dica,
+  .nota-msg {
+    display: none !important;
+  }
+
+  /* Prepara a página para impressão */
+
+  html,
+  body {
+    background: #fff !important;
+  }
+
+  .app {
+    display: block !important;
+    min-height: 0 !important;
+    padding: 0 !important;
+  }
+
+  .conteudo {
+    padding: 0 !important;
+  }
+
+  /* Folha e editor */
+
+  .nota-folha {
+    margin: 0;
+    border: 0;
+    background: #fff;
+  }
+
+  .nota-editor {
+    min-height: 0;
+    padding: 0;
+    color: #000;
+  }
+
+  /* Título impresso */
+
+  .so-impressao {
+    display: block;
+
+    margin: 0 0 0.75rem;
+
+    color: #000;
+    font: 700 24px/1.3 Inter, "Segoe UI",
+      system-ui, sans-serif;
+  }
+
+  /* Evita quebras inadequadas entre páginas */
+
+  .nota-editor p,
+  .nota-editor div {
+    orphans: 3;
+    widows: 3;
+  }
+
+  /* Preserva as cores durante a impressão */
+
+  * {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  @page {
+    margin: 18mm;
+  }
+}

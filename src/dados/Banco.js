@@ -1,8 +1,9 @@
 // Acesso ao IndexedDB. A interface só usa estas funções, nunca o IndexedDB direto.
 const NOME_BANCO = 'deadessence';
-const VERSAO = 2;
+const VERSAO = 3;
 export const STORE_PERSONAGENS = 'personagens';
 export const STORE_ROLAGENS = 'rolagens';
+export const STORE_ANOTACOES = 'anotacoes';
 
 let promessaBanco = null;
 
@@ -16,6 +17,7 @@ export function abrirBanco() {
         // é assim que as fichas dos jogadores sobrevivem às atualizações do app.
         if (e.oldVersion < 1) db.createObjectStore(STORE_PERSONAGENS, { keyPath: 'id' });
         if (e.oldVersion < 2) db.createObjectStore(STORE_ROLAGENS, { keyPath: 'id' });
+        if (e.oldVersion < 3) db.createObjectStore(STORE_ANOTACOES, { keyPath: 'id' });
       };
       pedido.onsuccess = () => {
         const db = pedido.result;
@@ -63,6 +65,17 @@ export async function listarRolagens() {
 export const registrarRolagem = async (r) => { await executar(STORE_ROLAGENS, 'readwrite', (s) => s.add(r)); return r; };
 export const atualizarRolagem = async (r) => { await executar(STORE_ROLAGENS, 'readwrite', (s) => s.put(r)); return r; };
 export const limparRolagens = () => executar(STORE_ROLAGENS, 'readwrite', (s) => s.clear());
+
+// ---------- Anotações ----------
+export async function listarAnotacoes() {
+  const lista = await executar(STORE_ANOTACOES, 'readonly', (s) => s.getAll());
+  return lista.sort((a, b) => b.atualizadoEm.localeCompare(a.atualizadoEm));
+}
+export const obterAnotacao = (id) => executar(STORE_ANOTACOES, 'readonly', (s) => s.get(id));
+// add: id repetido dá erro em vez de sobrescrever. salvar usa put (atualiza a anotação aberta).
+export const criarAnotacao = async (n) => { await executar(STORE_ANOTACOES, 'readwrite', (s) => s.add(n)); return n; };
+export const salvarAnotacao = async (n) => { await executar(STORE_ANOTACOES, 'readwrite', (s) => s.put(n)); return n; };
+export const excluirAnotacao = (id) => executar(STORE_ANOTACOES, 'readwrite', (s) => s.delete(id));
 
 // Pede ao navegador para não apagar os dados por falta de espaço. Não é garantia absoluta.
 export async function pedirPersistencia() {
