@@ -1,14 +1,8 @@
-import { ATRIBUTOS, RACAS, fichaNova } from '../modelos/Ficha.js';
 import { useCallback, useEffect, useRef, useState } from 'react';
-import {
-  atualizarFicha,
-  criarFicha,
-  excluirFicha,
-  listarFichas,
-  obterFicha,
-  pedirPersistencia
-} from '../dados/Banco.js';
-import './Fichas.css';
+import { ATRIBUTOS, RACAS, fichaNova } from '../modelos/ficha.js';
+import { atualizarFicha, criarFicha, excluirFicha, listarFichas, obterFicha, pedirPersistencia } from '../dados/banco.js';
+import { PaginaProficiencias } from './Proficiencias.jsx';
+import './fichas.css';
 
 const nomeDe = (f) => f.nome.trim() || '(sem nome)';
 const mostrar = (v) => v ?? '--';
@@ -127,7 +121,7 @@ function Par({ rotulo, valor, aoMudar }) {
   );
 }
 
-export function Ficha({ id }) {
+export function Ficha({ id, aba }) {
   const [ficha, setFicha] = useState(null);
   const [carga, setCarga] = useState('carregando');
   const [salvo, setSalvo] = useState('salvo');
@@ -192,6 +186,11 @@ export function Ficha({ id }) {
       <h1>{nomeDe(ficha)}</h1>
       <p className={`estado estado--${salvo}`} role="status">{TEXTO_SALVO[salvo]}</p>
 
+      <nav className="abas" aria-label="Seções da ficha">
+        <a href={`#/personagens/${id}`} aria-current={aba ? undefined : 'page'}>Geral</a>
+        <a href={`#/personagens/${id}/proficiencias`} aria-current={aba === 'proficiencias' ? 'page' : undefined}>Proficiências</a>
+      </nav>
+      {aba === 'proficiencias' ? <PaginaProficiencias ficha={ficha} alterar={alterar} /> : (<>
       <h2>Identidade</h2>
       <div className="grade">
         <Texto rotulo="Nome" valor={ficha.nome} aoMudar={defina('nome')} />
@@ -220,7 +219,8 @@ export function Ficha({ id }) {
             aoMudar={(v) => alterar((f) => ({ ...f, atributos: { ...f.atributos, [a.id]: v } }))} />
         ))}
       </div>
-      <p className="suave">Proficiências, passivas e origens, status e o triângulo de atributos entram nas próximas etapas.</p>
+      <p className="suave">Passivas e origens, status e o triângulo de atributos entram nas próximas etapas.</p>
+      </>)}
     </>
   );
 }

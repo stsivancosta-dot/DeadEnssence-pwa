@@ -29,7 +29,7 @@ export default function App() {
   const ativa = ITENS.some((i) => i.id === secao) ? secao : 'inicio';
 
   let pagina = <Dashboard />;
-  if (secao === 'personagens') pagina = sub ? <Ficha key={sub} id={sub} /> : <Personagens />;
+  if (secao === 'personagens') pagina = sub ? <Ficha key={sub} id={sub} aba={rota[2]} /> : <Personagens />;
   else if (secao === 'anotacoes') pagina = sub ? <Nota key={sub} id={sub} /> : <Anotacoes />;
   else if (secao === 'rolagens') pagina = <Rolagens />;
 

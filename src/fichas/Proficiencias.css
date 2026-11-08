@@ -1,0 +1,269 @@
+/* ========================================
+   ABAS E NAVEGAÇÃO
+======================================== */
+
+.abas {
+  display: flex;
+  gap: 0.25rem;
+  margin: 0.5rem 0 0;
+  border-bottom: 1px solid var(--borda);
+}
+
+.abas a {
+  padding: 0.65rem 1rem;
+  color: var(--suave);
+  text-decoration: none;
+  border-bottom: 3px solid transparent;
+}
+
+.abas a:hover {
+  color: var(--texto);
+}
+
+.abas a[aria-current="page"] {
+  color: var(--texto);
+  border-bottom-color: var(--ciano);
+}
+
+.abas a:focus-visible {
+  outline: 2px solid var(--ciano);
+  outline-offset: -2px;
+}
+
+/* ========================================
+   CONTADORES DE GRAUS
+======================================== */
+
+.contadores {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.contador-grau {
+  padding: 0.45rem 0.8rem;
+
+  background: var(--painel);
+
+  border: 1px solid var(--borda);
+  border-left: 6px solid var(--cor);
+  border-radius: 6px;
+}
+
+.contador-grau strong {
+  margin-left: 0.35rem;
+  font-size: 1.1rem;
+}
+
+/* ========================================
+   PROFICIÊNCIAS
+======================================== */
+
+/* Avisos */
+
+.prof-aviso {
+  min-height: 1.5rem;
+  margin: 0 0 0.5rem;
+  color: #f0b429;
+}
+
+/* Lista de proficiências */
+
+.prof-lista {
+  display: grid;
+  gap: 0.4rem;
+
+  max-width: 640px;
+  margin: 0;
+  padding: 0;
+
+  list-style: none;
+}
+
+/* Item individual */
+
+.prof {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  gap: 0.1rem 0.75rem;
+
+  padding: 0.5rem 0.75rem;
+
+  background: var(--painel);
+  border: 1px solid var(--borda);
+  border-radius: 8px;
+}
+
+/* Nome e estado */
+
+.prof-nome {
+  font-weight: 600;
+}
+
+.prof-estado {
+  grid-column: 1;
+  font-size: 0.875rem;
+}
+
+/* Seleção de graus */
+
+.prof-graus {
+  display: flex;
+  grid-column: 2;
+  grid-row: 1 / span 2;
+  gap: 0.35rem;
+}
+
+/* Botões de grau */
+
+.grau {
+  min-width: 48px;
+  min-height: 44px;
+  padding: 0 0.5rem;
+
+  background: transparent;
+  color: var(--texto);
+
+  border: 2px solid var(--cor, var(--borda));
+  border-radius: 6px;
+
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.grau[aria-pressed="true"] {
+  background: var(--cor);
+  color: var(--sobre);
+}
+
+/* Estados dos botões */
+
+.grau.cheio {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.grau.remover {
+  --cor: var(--borda);
+  min-width: 44px;
+}
+
+.grau:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+
+.grau:focus-visible {
+  outline: 2px solid var(--ciano);
+  outline-offset: 2px;
+}
+
+/* ========================================
+   GRÁFICOS DE PROFICIÊNCIAS
+======================================== */
+
+.grafico {
+  max-width: 640px;
+  margin: 1.5rem 0 0;
+}
+
+/* Legenda do gráfico */
+
+.grafico figcaption {
+  margin-bottom: 0.6rem;
+  color: var(--suave);
+  font-weight: 600;
+}
+
+/* Linha individual */
+
+.grafico-linha {
+  display: grid;
+  grid-template-columns: 6.5rem 1fr 2.5rem;
+  align-items: center;
+  gap: 0.6rem;
+
+  margin-bottom: 0.5rem;
+}
+
+/* Barra de progresso */
+
+.grafico-barra {
+  display: flex;
+
+  height: 22px;
+
+  background: var(--painel);
+  border: 1px solid var(--borda);
+  border-radius: 4px;
+
+  overflow: hidden;
+}
+
+.grafico-barra i {
+  display: block;
+  height: 100%;
+}
+
+/* Total apresentado */
+
+.grafico-total {
+  font-size: 1.15rem;
+  text-align: right;
+}
+
+/* Legenda de cores */
+
+.grafico-legenda {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem 1rem;
+
+  margin-top: 0.5rem;
+
+  font-size: 0.875rem;
+  color: var(--suave);
+}
+
+.grafico-legenda span::before {
+  display: inline-block;
+
+  width: 0.8rem;
+  height: 0.8rem;
+  margin-right: 0.35rem;
+
+  content: "";
+
+  background: var(--cor);
+  border-radius: 2px;
+
+  vertical-align: -1px;
+}
+
+/* ========================================
+   RESPONSIVIDADE
+======================================== */
+
+@media (max-width: 480px) {
+
+  /* Proficiências em coluna */
+
+  .prof {
+    grid-template-columns: 1fr;
+  }
+
+  .prof-graus {
+    grid-column: 1;
+    grid-row: auto;
+    margin-top: 0.4rem;
+  }
+
+  /* Gráficos adaptados a telas menores */
+
+  .grafico-linha {
+    grid-template-columns: 5.5rem 1fr 2rem;
+  }
+
+}

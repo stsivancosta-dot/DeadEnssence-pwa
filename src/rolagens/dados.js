@@ -1,13 +1,11 @@
 // Lógica pura das rolagens (sem React, sem banco): fácil de testar.
+import { GRAUS } from '../modelos/proficiencias.js';
+
 export const TIPOS_DADO = [4, 6, 8, 10, 12, 20];
 export const LIMITE_DADOS = 10;
 export const MAX_FLUXO = 2;
-export const GRAUS_PROFICIENCIA = [
-  { id: 'nenhuma', rotulo: 'Nenhuma', bonus: 0 },
-  { id: 'fraco', rotulo: 'Fraco', bonus: 4 },
-  { id: 'experiente', rotulo: 'Experiente', bonus: 8 },
-  { id: 'avancado', rotulo: 'Avançado', bonus: 12 },
-];
+// Graus e bônus vêm de um só lugar (modelos/proficiencias.js).
+export const GRAUS_PROFICIENCIA = [{ id: 'nenhuma', rotulo: 'Nenhuma', bonus: 0 }, ...GRAUS.map(({ id, rotulo, bonus }) => ({ id, rotulo, bonus }))];
 
 const inteiroEntre = (v, min, max, nome) => {
   if (!Number.isInteger(v) || v < min || v > max) throw new RangeError(`${nome} deve ser um número inteiro de ${min} a ${max}.`);
@@ -35,7 +33,7 @@ export function rolagemLivre({ lados, quantidade, finalidade }, aleatorio) {
 }
 
 // Teste: cada D20 é rolado separado e o jogador escolhe qual usar (não há soma de D20).
-export function rolagemTeste({ quantidade, fluxo, proficiencia, finalidade }, aleatorio) {
+export function rolagemTeste({ quantidade, fluxo, proficiencia, finalidade, pericia, personagem }, aleatorio) {
   inteiroEntre(fluxo, 0, MAX_FLUXO, 'Os pontos de Fluxo');
   const grau = GRAUS_PROFICIENCIA.find((g) => g.id === proficiencia);
   if (!grau) throw new RangeError('Proficiência inválida.');
@@ -46,6 +44,7 @@ export function rolagemTeste({ quantidade, fluxo, proficiencia, finalidade }, al
     fluxo: { pontos: fluxo, resultados: fluxo > 0 ? rolarVarios(8, fluxo, aleatorio) : [] },
     proficiencia: grau.id, bonus: grau.bonus,
     finalidade: finalidade?.trim() || null,
+    pericia: pericia || null, personagem: personagem || null, // proficiência e personagem do teste, quando escolhidos
   };
 }
 
