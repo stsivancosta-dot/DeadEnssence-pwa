@@ -26,6 +26,8 @@ export function fichaNova() {
     defesaEspecial: 8,
     essencialidade: { atual: 30, total: 30 },
     fluxo: 0,
+    buffs: ['', '', ''],
+    debuffs: ['', '', ''],
     proficiencias: {}, // só as treinadas: { acrobacia: 'fraco', ... }
     atributos: { fisico: null, intelecto: null, presenca: null },
     criadoEm: agora,

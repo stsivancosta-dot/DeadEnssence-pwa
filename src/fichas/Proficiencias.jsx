@@ -1,7 +1,9 @@
 import { useState } from 'react';
-import { ATRIBUTOS } from '../modelos/ficha.js';
+import { ATRIBUTOS } from '../modelos/Ficha.js';
 import { GRAUS, PROFICIENCIAS, contagem, definirGrau, grauPorId, somaPorGrupo } from '../modelos/proficiencias.js';
-import './proficiencias.css';
+import './Proficiencias.css';
+
+const paraNumero = (txt) => (txt === '' ? null : Math.trunc(Number(txt)));
 
 function Grafico({ treinadas }) {
   const dados = somaPorGrupo(treinadas);
@@ -54,15 +56,27 @@ export function PaginaProficiencias({ ficha, alterar }) {
       <p className="prof-aviso" role="status">{aviso}</p>
 
       <h2>Atributos</h2>
-      <div className="grade">
+      <div className="grade grade-atributos">
         {ATRIBUTOS.map((a) => (
-          <div className="painel" key={a.id}>
+          <label className="campo painel" key={a.id}>
             <span className="rotulo">{a.rotulo}</span>
-            <strong className="valor">{ficha.atributos?.[a.id] ?? '--'}</strong>
-          </div>
+            <input
+              type="number"
+              inputMode="numeric"
+              step="1"
+              value={ficha.atributos?.[a.id] ?? ''}
+              onChange={(e) => {
+                const val = paraNumero(e.target.value);
+                alterar((f) => ({
+                  ...f,
+                  atributos: { ...(f.atributos ?? {}), [a.id]: val },
+                }));
+              }}
+            />
+          </label>
         ))}
       </div>
-      <p className="suave">Os valores dos atributos são editados na aba Geral e não entram na soma das proficiências.</p>
+      <p className="suave">Os valores dos atributos são a base do personagem e não entram na soma das proficiências.</p>
 
       <Grafico treinadas={treinadas} />
 

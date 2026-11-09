@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { ATRIBUTOS, RACAS, fichaNova } from '../modelos/ficha.js';
-import { atualizarFicha, criarFicha, excluirFicha, listarFichas, obterFicha, pedirPersistencia } from '../dados/banco.js';
+import { ATRIBUTOS, RACAS, fichaNova } from '../modelos/Ficha.js';
+import { atualizarFicha, criarFicha, excluirFicha, listarFichas, obterFicha, pedirPersistencia } from '../dados/Banco.js';
 import { PaginaProficiencias } from './Proficiencias.jsx';
 import './fichas.css';
 
@@ -93,8 +93,8 @@ export function Personagens() {
   );
 }
 
-const Texto = ({ rotulo, valor, aoMudar }) => (
-  <label className="campo">
+const Texto = ({ rotulo, valor, aoMudar, className = 'campo' }) => (
+  <label className={className}>
     <span className="rotulo">{rotulo}</span>
     <input type="text" value={valor} maxLength={100} onChange={(e) => aoMudar(e.target.value)} />
   </label>
@@ -107,9 +107,29 @@ const Numero = ({ rotulo, valor, aoMudar }) => (
   </label>
 );
 
+function QuadroCompacto({ rotulo, valor, aoMudar }) {
+  const inputId = `campo-${rotulo.replace(/\s+/g, '-').toLowerCase()}`;
+  return (
+    <div className="painel quadro-compacto">
+      <label className="rotulo-compacto" htmlFor={inputId}>
+        {rotulo}
+      </label>
+      <input
+        id={inputId}
+        className="input-compacto"
+        type="number"
+        inputMode="numeric"
+        step="1"
+        value={valor ?? ''}
+        onChange={(e) => aoMudar(paraNumero(e.target.value))}
+      />
+    </div>
+  );
+}
+
 function Par({ rotulo, valor, aoMudar }) {
   return (
-    <fieldset className="painel par">
+    <fieldset className="painel par par-reduzido">
       <legend className="rotulo">{rotulo}</legend>
       <strong className="valor">{mostrar(valor.atual)}/{mostrar(valor.total)}</strong>
       <div className="barra" aria-hidden="true"><i style={{ width: `${porcento(valor)}%` }} /></div>
@@ -125,6 +145,7 @@ export function Ficha({ id, aba }) {
   const [ficha, setFicha] = useState(null);
   const [carga, setCarga] = useState('carregando');
   const [salvo, setSalvo] = useState('salvo');
+  const [mostrarStatus, setMostrarStatus] = useState(false);
   const temporizador = useRef(null);
   const pendente = useRef(null);
 
@@ -180,6 +201,21 @@ export function Ficha({ id, aba }) {
   if (carga === 'erro') return <p className="vazio" role="alert">Não foi possível ler a ficha deste aparelho.</p>;
   if (carga === 'inexistente') return <p className="vazio">Ficha não encontrada neste aparelho. <a href="#/personagens">Voltar à lista</a></p>;
 
+  const buffs = Array.isArray(ficha.buffs) ? [...ficha.buffs, '', ''].slice(0, 3) : ['', '', ''];
+  const debuffs = Array.isArray(ficha.debuffs) ? [...ficha.debuffs, '', ''].slice(0, 3) : ['', '', ''];
+
+  function mudarBuff(idx, valor) {
+    const novos = [...buffs];
+    novos[idx] = valor;
+    alterar((f) => ({ ...f, buffs: novos }));
+  }
+
+  function mudarDebuff(idx, valor) {
+    const novos = [...debuffs];
+    novos[idx] = valor;
+    alterar((f) => ({ ...f, debuffs: novos }));
+  }
+
   return (
     <>
       <p className="trilha"><a href="#/personagens">Personagens</a> &gt; {nomeDe(ficha)}</p>
@@ -190,37 +226,93 @@ export function Ficha({ id, aba }) {
         <a href={`#/personagens/${id}`} aria-current={aba ? undefined : 'page'}>Geral</a>
         <a href={`#/personagens/${id}/proficiencias`} aria-current={aba === 'proficiencias' ? 'page' : undefined}>Proficiências</a>
       </nav>
-      {aba === 'proficiencias' ? <PaginaProficiencias ficha={ficha} alterar={alterar} /> : (<>
-      <h2>Identidade</h2>
-      <div className="grade">
-        <Texto rotulo="Nome" valor={ficha.nome} aoMudar={defina('nome')} />
-        <Texto rotulo="Gênero" valor={ficha.genero} aoMudar={defina('genero')} />
-        <label className="campo">
-          <span className="rotulo">Raça</span>
-          <select value={ficha.raca} onChange={(e) => defina('raca')(e.target.value)}>
-            {RACAS.map((r) => <option key={r} value={r}>{r}</option>)}
-          </select>
-        </label>
-      </div>
 
-      <h2>Corpo</h2>
-      <div className="grade">
-        <Par rotulo="Vida" valor={ficha.vida} aoMudar={definaPar('vida')} />
-        <Numero rotulo="Defesa" valor={ficha.defesa} aoMudar={defina('defesa')} />
-        <Numero rotulo="Defesa especial" valor={ficha.defesaEspecial} aoMudar={defina('defesaEspecial')} />
-        <Par rotulo="Essencialidade" valor={ficha.essencialidade} aoMudar={definaPar('essencialidade')} />
-        <Numero rotulo="Pontos de Fluxo" valor={ficha.fluxo} aoMudar={defina('fluxo')} />
-      </div>
+      {aba === 'proficiencias' ? (
+        <PaginaProficiencias ficha={ficha} alterar={alterar} />
+      ) : (
+        <div className="ficha-geral">
+          {/* TOP — Identificação e Pontos de Fluxo */}
+          <h2>Identidade</h2>
+          <div className="secao-identidade">
+            <div className="campos-identidade">
+              <Texto rotulo="Nome" valor={ficha.nome} aoMudar={defina('nome')} />
+              <div className="linha-genero-raca">
+                <Texto rotulo="Gênero" valor={ficha.genero} aoMudar={defina('genero')} />
+                <label className="campo">
+                  <span className="rotulo">Raça</span>
+                  <select value={ficha.raca} onChange={(e) => defina('raca')(e.target.value)}>
+                    {RACAS.map((r) => <option key={r} value={r}>{r}</option>)}
+                  </select>
+                </label>
+              </div>
+            </div>
+            <div className="fluxo-container">
+              <QuadroCompacto rotulo="Pontos de Fluxo" valor={ficha.fluxo} aoMudar={defina('fluxo')} />
+            </div>
+          </div>
 
-      <h2>Atributos</h2>
-      <div className="grade">
-        {ATRIBUTOS.map((a) => (
-          <Numero key={a.id} rotulo={a.rotulo} valor={ficha.atributos[a.id]}
-            aoMudar={(v) => alterar((f) => ({ ...f, atributos: { ...f.atributos, [a.id]: v } }))} />
-        ))}
-      </div>
-      <p className="suave">Passivas e origens, status e o triângulo de atributos entram nas próximas etapas.</p>
-      </>)}
+          {/* MID 1 — Status do personagem */}
+          <section className="secao-status" aria-label="Status do personagem">
+            <div className="status-topo">
+              <button
+                type="button"
+                className="btn btn-status"
+                onClick={() => setMostrarStatus((v) => !v)}
+                aria-expanded={mostrarStatus}
+              >
+                Status <span className="seta" aria-hidden="true">{mostrarStatus ? '▲' : '▼'}</span>
+              </button>
+            </div>
+            {mostrarStatus && (
+              <div className="status-quadros">
+                <div className="painel status-coluna">
+                  <span className="rotulo status-titulo">Buffs</span>
+                  {buffs.map((b, i) => (
+                    <input
+                      key={`buff-${i}`}
+                      type="text"
+                      className="input-status"
+                      placeholder={`Buff ${i + 1}`}
+                      value={b}
+                      maxLength={100}
+                      onChange={(e) => mudarBuff(i, e.target.value)}
+                    />
+                  ))}
+                </div>
+                <div className="painel status-coluna">
+                  <span className="rotulo status-titulo">Debuffs</span>
+                  {debuffs.map((d, i) => (
+                    <input
+                      key={`debuff-${i}`}
+                      type="text"
+                      className="input-status"
+                      placeholder={`Debuff ${i + 1}`}
+                      value={d}
+                      maxLength={100}
+                      onChange={(e) => mudarDebuff(i, e.target.value)}
+                    />
+                  ))}
+                </div>
+              </div>
+            )}
+          </section>
+
+          {/* MID 2 — Corpo */}
+          <h2>Corpo</h2>
+          <div className="secao-corpo">
+            <div className="corpo-linha-vital">
+              <Par rotulo="Vida" valor={ficha.vida} aoMudar={definaPar('vida')} />
+              <Par rotulo="Essencialidade" valor={ficha.essencialidade} aoMudar={definaPar('essencialidade')} />
+            </div>
+            <div className="corpo-linha-defesa">
+              <QuadroCompacto rotulo="Defesa" valor={ficha.defesa} aoMudar={defina('defesa')} />
+              <QuadroCompacto rotulo="Defesa especial" valor={ficha.defesaEspecial} aoMudar={defina('defesaEspecial')} />
+            </div>
+          </div>
+
+          <p className="suave aviso-proximas-etapas">Passivas, origens e outros detalhes entram nas próximas etapas.</p>
+        </div>
+      )}
     </>
   );
 }

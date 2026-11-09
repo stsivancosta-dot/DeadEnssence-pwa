@@ -1,22 +1,372 @@
-.campo { display: flex; flex-direction: column; gap: .25rem; }
-.campo input, .campo select {
-  min-height: 44px; padding: 0 .6rem; background: var(--fundo); color: var(--texto);
-  border: 1px solid var(--borda); border-radius: 6px; font: inherit; width: 100%;
+/* ========================================
+   CAMPOS BÁSICOS E BOTÕES
+======================================== */
+.campo {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
 }
-.campo input:focus-visible, .campo select:focus-visible { outline: 2px solid var(--ciano); outline-offset: 1px; }
-.par { margin: 0; min-width: 0; }
-.par legend { padding: 0 .25rem; }
-.duplo { display: grid; grid-template-columns: 1fr 1fr; gap: .5rem; margin-top: .5rem; }
-.lista { display: grid; gap: .75rem; max-width: 520px; }
-.acoes { display: flex; flex-wrap: wrap; gap: .5rem; margin-top: .25rem; }
+
+.campo input,
+.campo select {
+  min-height: 44px;
+  padding: 0 0.6rem;
+  background: var(--fundo);
+  color: var(--texto);
+  border: 1px solid var(--borda);
+  border-radius: 6px;
+  font: inherit;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.campo input:focus-visible,
+.campo select:focus-visible {
+  outline: 2px solid var(--ciano);
+  outline-offset: 1px;
+}
+
+.lista {
+  display: grid;
+  gap: 0.75rem;
+  max-width: 520px;
+}
+
+.acoes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 0.25rem;
+}
+
 .btn {
-  display: inline-flex; align-items: center; min-height: 44px; padding: 0 1rem; background: var(--painel);
-  color: var(--texto); border: 1px solid var(--ciano); border-radius: 6px; font: inherit; text-decoration: none; cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  padding: 0 1rem;
+  background: var(--painel);
+  color: var(--texto);
+  border: 1px solid var(--ciano);
+  border-radius: 6px;
+  font: inherit;
+  text-decoration: none;
+  cursor: pointer;
+  box-sizing: border-box;
 }
-.btn:hover { background: var(--borda); }
-.btn:focus-visible { outline: 2px solid var(--ciano); outline-offset: 2px; }
-.btn.perigo { border-color: #e5645a; }
-.estado { font-size: .875rem; margin-bottom: 0; }
-.estado--salvo { color: #4cc38a; }
-.estado--salvando { color: var(--suave); }
-.estado--erro { color: #e5645a; }
+
+.btn:hover {
+  background: var(--borda);
+}
+
+.btn:focus-visible {
+  outline: 2px solid var(--ciano);
+  outline-offset: 2px;
+}
+
+.btn.perigo {
+  border-color: #e5645a;
+}
+
+.estado {
+  font-size: 0.875rem;
+  margin-bottom: 0;
+}
+
+.estado--salvo {
+  color: #4cc38a;
+}
+
+.estado--salvando {
+  color: var(--suave);
+}
+
+.estado--erro {
+  color: #e5645a;
+}
+
+/* ========================================
+   FICHA GERAL — ESTRUTURA
+======================================== */
+.ficha-geral {
+  display: flex;
+  flex-direction: column;
+  max-width: 640px;
+}
+
+.aviso-proximas-etapas {
+  margin-top: 1.5rem;
+}
+
+/* ========================================
+   TOP — IDENTIFICAÇÃO E PONTOS DE FLUXO
+======================================== */
+.secao-identidade {
+  display: flex;
+  gap: 0.75rem;
+  align-items: stretch;
+}
+
+.campos-identidade {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  min-width: 0;
+}
+
+.linha-genero-raca {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.5rem;
+}
+
+.fluxo-container {
+  display: flex;
+  align-items: stretch;
+}
+
+/* Quadro compacto (usado em Fluxo, Defesa e Defesa Especial) */
+.quadro-compacto {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 0.6rem 0.5rem;
+  background: var(--painel);
+  border: 1px solid var(--borda);
+  border-radius: 8px;
+  width: 120px;
+  min-height: 105px;
+  box-sizing: border-box;
+}
+
+.rotulo-compacto {
+  font-size: 0.8rem;
+  color: var(--suave);
+  line-height: 1.2;
+  margin-bottom: 0.35rem;
+  text-align: center;
+  font-weight: 500;
+  display: block;
+}
+
+.input-compacto {
+  width: 64px;
+  min-height: 42px;
+  text-align: center;
+  font-size: 1.4rem;
+  font-weight: 700;
+  background: var(--fundo);
+  color: var(--texto);
+  border: 1px solid var(--borda);
+  border-radius: 6px;
+  padding: 0.15rem 0.3rem;
+  box-sizing: border-box;
+}
+
+.input-compacto:focus-visible {
+  outline: 2px solid var(--ciano);
+  outline-offset: 1px;
+}
+
+/* ========================================
+   MID 1 — STATUS (BUFFS & DEBUFFS)
+======================================== */
+.secao-status {
+  margin: 1.25rem 0 0.5rem;
+}
+
+.status-topo {
+  display: flex;
+  align-items: center;
+}
+
+.btn-status {
+  min-height: 38px;
+  padding: 0 0.85rem;
+  gap: 0.5rem;
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.btn-status .seta {
+  font-size: 0.7rem;
+  color: var(--ciano);
+}
+
+.status-quadros {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.6rem;
+  margin-top: 0.65rem;
+}
+
+.status-coluna {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  padding: 0.65rem;
+  min-width: 0;
+}
+
+.status-titulo {
+  font-size: 0.825rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--suave);
+  margin-bottom: 0.1rem;
+}
+
+.input-status {
+  width: 100%;
+  min-height: 38px;
+  padding: 0.3rem 0.5rem;
+  background: var(--fundo);
+  color: var(--texto);
+  border: 1px solid var(--borda);
+  border-radius: 6px;
+  font: inherit;
+  font-size: 0.85rem;
+  box-sizing: border-box;
+}
+
+.input-status:focus-visible {
+  outline: 2px solid var(--ciano);
+  outline-offset: 1px;
+}
+
+/* ========================================
+   MID 2 — CORPO
+======================================== */
+.secao-corpo {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.corpo-linha-vital {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.6rem;
+}
+
+.par {
+  margin: 0;
+  min-width: 0;
+}
+
+.par legend {
+  padding: 0 0.25rem;
+}
+
+.par-reduzido {
+  padding: 0.55rem 0.7rem;
+  gap: 0.2rem;
+}
+
+.par-reduzido .valor {
+  font-size: 1.3rem;
+}
+
+.par-reduzido .barra {
+  height: 5px;
+  margin-top: 0.2rem;
+}
+
+.par-reduzido .duplo {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.35rem;
+  margin-top: 0.35rem;
+}
+
+.par-reduzido .duplo .campo {
+  gap: 0.15rem;
+}
+
+.par-reduzido .duplo .campo .rotulo {
+  font-size: 0.725rem;
+}
+
+.par-reduzido .duplo .campo input {
+  min-height: 36px;
+  padding: 0 0.4rem;
+  font-size: 0.9rem;
+}
+
+.corpo-linha-defesa {
+  display: flex;
+  gap: 0.6rem;
+}
+
+.corpo-linha-defesa .quadro-compacto {
+  flex: 0 0 120px;
+}
+
+/* ========================================
+   RESPONSIVIDADE PARA DISPOSITIVOS MÓVEIS
+======================================== */
+@media (max-width: 540px) {
+  .secao-identidade {
+    flex-direction: column;
+  }
+
+  .fluxo-container {
+    justify-content: flex-start;
+  }
+
+  .fluxo-container .quadro-compacto {
+    width: 100%;
+    max-width: 140px;
+    min-height: 95px;
+  }
+
+  .status-quadros {
+    grid-template-columns: 1fr 1fr;
+    gap: 0.45rem;
+  }
+
+  .status-coluna {
+    padding: 0.5rem;
+    gap: 0.35rem;
+  }
+
+  .input-status {
+    min-height: 36px;
+    padding: 0.25rem 0.4rem;
+    font-size: 0.8rem;
+  }
+
+  .corpo-linha-vital {
+    grid-template-columns: 1fr 1fr;
+    gap: 0.45rem;
+  }
+
+  .par-reduzido {
+    padding: 0.45rem 0.5rem;
+  }
+
+  .par-reduzido .valor {
+    font-size: 1.15rem;
+  }
+
+  .par-reduzido .duplo .campo input {
+    min-height: 34px;
+    font-size: 0.85rem;
+  }
+
+  .corpo-linha-defesa {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.45rem;
+  }
+
+  .corpo-linha-defesa .quadro-compacto {
+    flex: initial;
+    width: 100%;
+    min-height: 95px;
+  }
+}
