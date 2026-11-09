@@ -58,13 +58,17 @@ function conferirVersao(envelope) {
 // ---------- Ficha individual ----------
 
 export function montarEnvelopeFicha(ficha, agora = new Date()) {
-  const { id, ...dados } = ficha; // o id é local; quem importar recebe um id novo
+  const { id, ...dados } = ficha;
   return {
     formato: FORMATO_FICHA,
     aplicativo: APLICATIVO_NOME,
     versao: VERSAO_FORMATO,
     exportadoEm: agora.toISOString(),
-    personagem: dados,
+    idOrigem: id,
+    personagem: {
+      ...dados,
+      idOrigem: id,
+    },
   };
 }
 
@@ -72,11 +76,11 @@ export function validarEnvelopeFicha(texto) {
   const lido = interpretarJson(texto);
   if (!lido.ok) return lido;
   const env = lido.dados;
-  if (!ehObjetoSimples(env) || env.formato !== FORMATO_FICHA) {
+  if (!ehObjetoSimples(env) || (env.formato !== FORMATO_FICHA && env.aplicativo !== APLICATIVO_NOME)) {
     if (ehObjetoSimples(env) && env.formato === FORMATO_BACKUP) {
-      return { ok: false, erro: 'Este arquivo é um backup completo, não uma ficha. Use a restauração de backup.' };
+      return { ok: false, erro: 'Este arquivo é um backup completo, não uma ficha individual. Use o Gerenciamento de Dados para restaurá-lo.' };
     }
-    return { ok: false, erro: 'Este arquivo não é uma ficha do DeadEssence.' };
+    return { ok: false, erro: 'Este arquivo não pertence ao formato de ficha do DeadEssence RPG.' };
   }
   const erroVersao = conferirVersao(env);
   if (erroVersao) return { ok: false, erro: erroVersao };
@@ -88,10 +92,17 @@ export function validarEnvelopeFicha(texto) {
   } catch (e) {
     return { ok: false, erro: e.message };
   }
+  const idOrigem = env.idOrigem || personagem.idOrigem || null;
   delete personagem.id;
   const nome = personagem[CAMPO_NOME];
-  if (typeof nome !== 'string' || !nome.trim()) return { ok: false, erro: 'A ficha do arquivo não tem nome.' };
-  return { ok: true, personagem };
+  if (typeof nome !== 'string' || !nome.trim()) return { ok: false, erro: 'A ficha do arquivo não possui um nome válido.' };
+  return {
+    ok: true,
+    personagem,
+    idOrigem,
+    versao: env.versao,
+    exportadoEm: env.exportadoEm,
+  };
 }
 
 // ---------- Backup completo ----------

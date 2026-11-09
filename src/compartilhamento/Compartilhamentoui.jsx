@@ -36,8 +36,8 @@ function Mensagem({ msg }) {
   );
 }
 
-// Compartilhamento ou download individual da ficha (usado na tela de personagem)
-export function CompartilharFicha({ ficha }) {
+// Compartilhamento ou download individual da ficha (usado na lista e na tela de personagem)
+export function CompartilharFicha({ ficha, rotulo = 'Compartilhar ficha', classeBtn = 'btn' }) {
   const [msg, setMsg] = useState(null);
   const [oferecerDownload, setOferecerDownload] = useState(false);
 
@@ -46,15 +46,17 @@ export function CompartilharFicha({ ficha }) {
     setOferecerDownload(false);
     const r = await compartilharFicha(ficha);
     if (r.status === 'compartilhado') {
-      setMsg({ tipo: 'ok', texto: 'Compartilhamento concluído. O arquivo da ficha foi enviado.' });
+      setMsg({ tipo: 'ok', texto: `Compartilhamento de "${ficha[CAMPO_NOME] || 'Personagem'}" concluído.` });
     } else if (r.status === 'cancelado') {
-      setMsg({ tipo: 'info', texto: 'Compartilhamento cancelado. Nada foi enviado.' });
+      setMsg({ tipo: 'info', texto: 'Compartilhamento cancelado.' });
     } else if (r.status === 'indisponivel') {
       setOferecerDownload(true);
-      setMsg({ tipo: 'info', texto: 'Este navegador não suporta compartilhamento direto de arquivos. Use o botão abaixo para baixar o arquivo .json.' });
+      // Se Web Share não for suportado, baixa o arquivo diretamente como fallback cômodo
+      baixarFicha(ficha);
+      setMsg({ tipo: 'info', texto: 'Compartilhamento nativo indisponível neste navegador. Download do arquivo JSON iniciado automaticamente.' });
     } else {
       setOferecerDownload(true);
-      setMsg({ tipo: 'erro', texto: `Não foi possível abrir o compartilhamento (${r.erro?.message ?? 'erro desconhecido'}). Você ainda pode baixar o arquivo.` });
+      setMsg({ tipo: 'erro', texto: `Não foi possível abrir o compartilhamento (${r.erro?.message ?? 'erro desconhecido'}). Você pode baixar o arquivo pelo botão abaixo.` });
     }
   }
 
@@ -62,25 +64,31 @@ export function CompartilharFicha({ ficha }) {
     const r = baixarFicha(ficha);
     setMsg(
       r.status === 'baixado'
-        ? { tipo: 'ok', texto: 'Download iniciado. O arquivo da ficha foi salvo no seu dispositivo.' }
+        ? { tipo: 'ok', texto: `Download de "${ficha[CAMPO_NOME] || 'Personagem'}" iniciado. Guarde o arquivo ou anexe-o em outro aplicativo.` }
         : { tipo: 'erro', texto: `Não foi possível gerar o arquivo (${r.erro?.message ?? 'erro desconhecido'}).` },
     );
   }
 
   return (
-    <div className="de-bloco">
+    <div className="compartilhar-ficha-container">
       <div className="de-acoes">
-        <button type="button" className="btn" onClick={aoCompartilhar}>Compartilhar ficha</button>
-        {oferecerDownload && <button type="button" className="btn" onClick={aoBaixar}>Baixar arquivo JSON</button>}
+        <button type="button" className={classeBtn} onClick={aoCompartilhar}>
+          {rotulo}
+        </button>
+        <button type="button" className={`${classeBtn} btn-baixar-json`} onClick={aoBaixar} title="Baixar arquivo JSON diretamente">
+          Baixar JSON
+        </button>
       </div>
       <Mensagem msg={msg} />
     </div>
   );
 }
 
-// Importação individual de ficha como nova (usado na lista de personagens)
-export function ImportarFicha({ criarFicha, nomesExistentes = [], aoImportar }) {
+// Importação individual de ficha com prévia e proteção contra duplicação
+export function ImportarFicha({ criarFicha, nomesExistentes = [], fichasExistentes = [], aoImportar }) {
   const [pendente, setPendente] = useState(null);
+  const [idOrigem, setIdOrigem] = useState(null);
+  const [usarSufixoCopia, setUsarSufixoCopia] = useState(true);
   const [salvando, setSalvando] = useState(false);
   const [msg, setMsg] = useState(null);
   const entrada = useRef(null);
@@ -90,53 +98,115 @@ export function ImportarFicha({ criarFicha, nomesExistentes = [], aoImportar }) 
     evento.target.value = '';
     setMsg(null);
     setPendente(null);
+    setIdOrigem(null);
     if (!arquivo) return;
+
     const r = await lerArquivoFicha(arquivo);
-    if (r.ok) setPendente(r.personagem);
-    else setMsg({ tipo: 'erro', texto: r.erro });
+    if (r.ok) {
+      setPendente(r.personagem);
+      setIdOrigem(r.idOrigem);
+    } else {
+      setMsg({ tipo: 'erro', texto: r.erro });
+    }
   }
 
+  const nomePersonagem = pendente?.[CAMPO_NOME]?.trim() || '(sem nome)';
+  const temConflitoNome = pendente && nomesExistentes.includes(nomePersonagem);
+  const temConflitoOrigem = pendente && idOrigem && fichasExistentes.some((f) => f.id === idOrigem);
+
   async function confirmar() {
+    if (!pendente) return;
     setSalvando(true);
-    const r = await importarFichaComoNova(pendente, criarFicha);
+    let nomeFinal = pendente[CAMPO_NOME];
+    if ((temConflitoNome || temConflitoOrigem) && usarSufixoCopia) {
+      nomeFinal = `${nomeFinal} (cópia)`;
+    }
+
+    const r = await importarFichaComoNova(pendente, criarFicha, { novoNome: nomeFinal });
     setSalvando(false);
     if (!r.ok) return setMsg({ tipo: 'erro', texto: r.erro });
+
     setPendente(null);
-    setMsg({ tipo: 'ok', texto: `Ficha "${r.ficha[CAMPO_NOME]}" adicionada como nova com sucesso.` });
+    setIdOrigem(null);
+    setMsg({
+      tipo: 'ok',
+      texto: `Ficha "${r.ficha[CAMPO_NOME]}" importada com sucesso como um novo personagem!`,
+    });
     aoImportar?.(r.ficha);
   }
 
   function cancelar() {
     setPendente(null);
-    setMsg({ tipo: 'info', texto: 'Importação cancelada. Nada foi salvo.' });
+    setIdOrigem(null);
+    setMsg({ tipo: 'info', texto: 'Importação cancelada. Nenhum dado foi salvo.' });
   }
 
+  const qtdProficiencias = pendente?.proficiencias ? Object.keys(pendente.proficiencias).length : 0;
+
   return (
-    <div className="de-bloco">
+    <div className="importar-ficha-bloco">
       <input ref={entrada} type="file" accept=".json,application/json" hidden onChange={aoEscolher} />
-      <button type="button" className="btn" onClick={() => entrada.current?.click()}>Importar ficha</button>
+      <button type="button" className="btn" onClick={() => entrada.current?.click()}>
+        Importar ficha
+      </button>
+
       {pendente && (
-        <div className="de-previa painel" role="group" aria-label="Confirmar importação">
-          <p>Adicionar <strong>{pendente[CAMPO_NOME]}</strong> como nova ficha?</p>
-          {nomesExistentes.includes(pendente[CAMPO_NOME]) && (
-            <p className="de-msg de-msg--info">Já existe uma ficha com este nome. Será criada uma segunda ficha; a original não muda.</p>
+        <div className="de-previa painel ficha-previa-importacao" role="group" aria-label="Confirmar importação de ficha">
+          <h3>Importar Personagem</h3>
+          <div className="ficha-resumo-item">
+            <strong>{pendente[CAMPO_NOME]}</strong>
+            <span className="suave">{pendente.raca || 'Humano'} {pendente.genero ? `• ${pendente.genero}` : ''}</span>
+            <div className="ficha-dados-rapidos">
+              <span>Vida: {pendente.vida?.atual ?? '--'}/{pendente.vida?.total ?? '--'}</span>
+              <span>Essencialidade: {pendente.essencialidade?.atual ?? '--'}/{pendente.essencialidade?.total ?? '--'}</span>
+              <span>Defesa: {pendente.defesa ?? '--'}</span>
+              <span>Defesa especial: {pendente.defesaEspecial ?? '--'}</span>
+              <span>Fluxo: {pendente.fluxo ?? 0}</span>
+              <span>Proficiências: {qtdProficiencias} treinada(s)</span>
+            </div>
+          </div>
+
+          {(temConflitoNome || temConflitoOrigem) && (
+            <div className="aviso-duplicacao-ficha">
+              <p>
+                ⚠️ <strong>Aviso de duplicação:</strong> Já existe uma ficha cadastrada com este nome ou identificador neste aparelho.
+              </p>
+              <label className="opcao-checkbox">
+                <input
+                  type="checkbox"
+                  checked={usarSufixoCopia}
+                  onChange={(e) => setUsarSufixoCopia(e.target.checked)}
+                />
+                <span>Adicionar sufixo " (cópia)" para diferenciar da ficha existente</span>
+              </label>
+            </div>
           )}
+
+          <p className="suave">
+            A ficha será registrada como um novo personagem independente, sem sobrescrever suas outras fichas.
+          </p>
+
           <div className="de-acoes">
-            <button type="button" className="btn" onClick={confirmar} disabled={salvando}>{salvando ? 'Salvando...' : 'Adicionar ficha'}</button>
-            <button type="button" className="btn" onClick={cancelar} disabled={salvando}>Cancelar</button>
+            <button type="button" className="btn" onClick={confirmar} disabled={salvando}>
+              {salvando ? 'Salvando...' : 'Confirmar e importar ficha'}
+            </button>
+            <button type="button" className="btn" onClick={cancelar} disabled={salvando}>
+              Cancelar
+            </button>
           </div>
         </div>
       )}
+
       <Mensagem msg={msg} />
     </div>
   );
 }
 
-// Componente completo de gerenciamento de backup geral (exportação e importação em dois modos)
+// Componente de gerenciamento de backup geral
 export function GerenciadorBackup({ armazenamento, aoAtualizar }) {
   const [preparo, setPreparo] = useState(null);
-  const [modoEscolhido, setModoEscolhido] = useState('mesclar'); // 'mesclar' | 'substituir'
-  const [modoConflito, setModoConflito] = useState('copiar'); // 'copiar' | 'manter' | 'sobrescrever'
+  const [modoEscolhido, setModoEscolhido] = useState('mesclar');
+  const [modoConflito, setModoConflito] = useState('copiar');
   const [confirmouSubstituicao, setConfirmouSubstituicao] = useState(false);
   const [ocupado, setOcupado] = useState(false);
   const [msg, setMsg] = useState(null);
@@ -158,7 +228,6 @@ export function GerenciadorBackup({ armazenamento, aoAtualizar }) {
           setMsg({ tipo: 'info', texto: 'Compartilhamento cancelado.' });
           return;
         }
-        // Se indisponível ou erro, faz fallback para download tradicional
       }
 
       baixarArquivoJson(nomeArquivo, texto);

@@ -200,6 +200,94 @@
   border-top: 1px solid var(--borda);
 }
 
+/* ========================================
+   TRANSFERÊNCIA INDIVIDUAL DE FICHAS
+======================================== */
+
+.topo-ficha-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-bottom: 0.25rem;
+}
+
+.topo-ficha-header h1 {
+  margin-bottom: 0;
+}
+
+.compartilhar-ficha-container {
+  display: inline-flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.btn-baixar-json {
+  font-size: 0.85rem;
+  opacity: 0.9;
+}
+
+.importar-ficha-bloco {
+  display: inline-flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.ficha-previa-importacao {
+  margin-top: 0.75rem;
+  max-width: 520px;
+}
+
+.ficha-resumo-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  padding: 0.65rem 0.75rem;
+  background: var(--fundo);
+  border: 1px solid var(--borda);
+  border-radius: 6px;
+}
+
+.ficha-dados-rapidos {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem 0.8rem;
+  font-size: 0.825rem;
+  color: var(--suave);
+  margin-top: 0.35rem;
+}
+
+.aviso-duplicacao-ficha {
+  padding: 0.6rem 0.75rem;
+  border-radius: 6px;
+  background: rgba(240, 180, 41, 0.12);
+  border: 1px solid #f0b429;
+  font-size: 0.85rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.aviso-duplicacao-ficha p {
+  margin: 0;
+  color: #f7d070;
+}
+
+.opcao-checkbox {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.85rem;
+  cursor: pointer;
+}
+
+.opcao-checkbox input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  accent-color: var(--ciano);
+}
+
 /* Mensagens de feedback */
 .de-msg {
   margin: 0;
@@ -230,6 +318,11 @@
 
 /* Responsividade Mobile */
 @media (max-width: 580px) {
+  .topo-ficha-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
   .comparativo-backup {
     grid-template-columns: 1fr;
     gap: 0.75rem;
@@ -241,6 +334,10 @@
   }
 
   .de-acoes button {
+    width: 100%;
+  }
+
+  .ficha-previa-importacao {
     width: 100%;
   }
 }

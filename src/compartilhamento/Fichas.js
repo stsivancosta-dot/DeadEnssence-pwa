@@ -19,13 +19,11 @@ export function textoFicha(ficha) {
 
 export function nomeArquivoFicha(ficha) {
   const base = String(ficha[CAMPO_NOME] ?? '')
-    .normalize('NFD')
-    .replace(/[\u0300-\u036f]/g, '')
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, '-')
-    .replace(/^-+|-+$/g, '')
+    .trim()
+    .replace(/[/\\?%*:|"<>]/g, '')
+    .replace(/\s+/g, '_')
     .slice(0, 40);
-  return `${base || 'ficha'}-deadessence.json`;
+  return `${base || 'Personagem'}_DeadEssence.json`;
 }
 
 // Retorna { status }:
@@ -54,7 +52,7 @@ export async function compartilharArquivoJson(nomeArquivo, texto, titulo = 'Dead
 }
 
 export async function compartilharFicha(ficha, nav = globalThis.navigator) {
-  return compartilharArquivoJson(nomeArquivoFicha(ficha), textoFicha(ficha), `Ficha: ${ficha[CAMPO_NOME]}`, nav);
+  return compartilharArquivoJson(nomeArquivoFicha(ficha), textoFicha(ficha), `Ficha: ${ficha[CAMPO_NOME] || 'Personagem'}`, nav);
 }
 
 export function baixarArquivoJson(nomeArquivo, texto) {
@@ -99,8 +97,15 @@ function gerarId() {
 
 // criarFicha(ficha) é a função de gravação do app. Ela DEVE usar store.add (não put),
 // para que um id repetido gere erro em vez de sobrescrever outra ficha.
-export async function importarFichaComoNova(personagem, criarFicha) {
-  const nova = { ...personagem, id: gerarId() };
+export async function importarFichaComoNova(personagem, criarFicha, { novoNome } = {}) {
+  const agora = new Date().toISOString();
+  const nova = {
+    ...personagem,
+    id: gerarId(),
+    nome: novoNome !== undefined ? novoNome : (personagem.nome || ''),
+    criadoEm: agora,
+    atualizadoEm: agora,
+  };
   try {
     const salva = await criarFicha(nova);
     return { ok: true, ficha: salva ?? nova };

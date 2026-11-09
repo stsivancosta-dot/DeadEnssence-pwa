@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { ATRIBUTOS, RACAS, fichaNova } from '../modelos/Ficha.js';
 import { atualizarFicha, criarFicha, excluirFicha, listarFichas, obterFicha, pedirPersistencia } from '../dados/Banco.js';
+import { CompartilharFicha, ImportarFicha } from '../compartilhamento/Compartilhamentoui.jsx';
 import { PaginaProficiencias } from './Proficiencias.jsx';
 import './fichas.css';
 
@@ -32,7 +33,7 @@ function useFichas() {
 
 function Cartao({ f, aoExcluir }) {
   return (
-    <div className="painel">
+    <div className="painel cartao-personagem">
       <strong>{nomeDe(f)}</strong>
       <span className="suave">{f.raca}</span>
       <span className="suave">
@@ -40,6 +41,7 @@ function Cartao({ f, aoExcluir }) {
       </span>
       <div className="acoes">
         <a className="btn" href={`#/personagens/${f.id}`}>Abrir ficha</a>
+        <CompartilharFicha ficha={f} rotulo="Compartilhar" />
         {aoExcluir && <button type="button" className="btn perigo" onClick={() => aoExcluir(f)}>Excluir</button>}
       </div>
     </div>
@@ -83,7 +85,19 @@ export function Personagens() {
   return (
     <>
       <h1>Personagens</h1>
-      <div className="acoes"><button type="button" className="btn" onClick={criar}>Criar personagem</button></div>
+      <div className="acoes">
+        <button type="button" className="btn" onClick={criar}>Criar personagem</button>
+        <ImportarFicha
+          criarFicha={async (novaFicha) => {
+            await criarFicha(novaFicha);
+            pedirPersistencia();
+            return novaFicha;
+          }}
+          nomesExistentes={fichas ? fichas.map((f) => f.nome.trim()) : []}
+          fichasExistentes={fichas ?? []}
+          aoImportar={() => recarregar()}
+        />
+      </div>
       {(erro || falha) && <p className="vazio" role="alert">{erro || falha}</p>}
       <h2>Suas fichas</h2>
       {!fichas && !erro && <p className="suave">Carregando...</p>}
@@ -219,7 +233,10 @@ export function Ficha({ id, aba }) {
   return (
     <>
       <p className="trilha"><a href="#/personagens">Personagens</a> &gt; {nomeDe(ficha)}</p>
-      <h1>{nomeDe(ficha)}</h1>
+      <div className="topo-ficha-header">
+        <h1>{nomeDe(ficha)}</h1>
+        <CompartilharFicha ficha={ficha} rotulo="Compartilhar ficha" />
+      </div>
       <p className={`estado estado--${salvo}`} role="status">{TEXTO_SALVO[salvo]}</p>
 
       <nav className="abas" aria-label="Seções da ficha">
