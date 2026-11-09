@@ -33,10 +33,10 @@ export function nomeArquivoFicha(ficha) {
 //  'cancelado'      o usuário fechou a tela de compartilhamento
 //  'indisponivel'   o navegador não compartilha arquivos: ofereça baixarFicha()
 //  'erro'           falha inesperada (inclui `erro`): ofereça baixarFicha()
-export async function compartilharFicha(ficha, nav = globalThis.navigator) {
+export async function compartilharArquivoJson(nomeArquivo, texto, titulo = 'DeadEssence RPG', nav = globalThis.navigator) {
   let arquivo;
   try {
-    arquivo = new File([textoFicha(ficha)], nomeArquivoFicha(ficha), { type: TIPO_MIME });
+    arquivo = new File([texto], nomeArquivo, { type: TIPO_MIME });
   } catch (erro) {
     return { status: 'erro', erro };
   }
@@ -45,12 +45,16 @@ export async function compartilharFicha(ficha, nav = globalThis.navigator) {
   if (!suportado) return { status: 'indisponivel' };
 
   try {
-    await nav.share({ files: [arquivo], title: `Ficha: ${ficha[CAMPO_NOME]}` });
+    await nav.share({ files: [arquivo], title });
     return { status: 'compartilhado' };
   } catch (erro) {
     if (erro && erro.name === 'AbortError') return { status: 'cancelado' };
     return { status: 'erro', erro };
   }
+}
+
+export async function compartilharFicha(ficha, nav = globalThis.navigator) {
+  return compartilharArquivoJson(nomeArquivoFicha(ficha), textoFicha(ficha), `Ficha: ${ficha[CAMPO_NOME]}`, nav);
 }
 
 export function baixarArquivoJson(nomeArquivo, texto) {

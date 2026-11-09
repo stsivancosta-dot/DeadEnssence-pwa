@@ -1,27 +1,246 @@
-/* Usa as variáveis do tema do app quando existirem; senão, cai nos padrões escuros. */
-.de-bloco { display: grid; gap: 0.75rem; }
-.de-acoes { display: flex; flex-wrap: wrap; gap: 0.5rem; }
-.de-bloco button {
-  min-height: 44px; /* alvo de toque confortável no celular */
-  padding: 0 1rem;
-  border: 1px solid var(--de-borda, #2b6f86);
+/* ========================================
+   COMPARTILHAMENTO E GERENCIAMENTO DE DADOS
+======================================== */
+
+.gerenciador-backup {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  max-width: 680px;
+  margin-top: 1rem;
+}
+
+.backup-card {
+  padding: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.backup-card h2 {
+  margin: 0;
+  font-size: 1.2rem;
+  color: var(--texto);
+}
+
+.status-backup-painel {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  margin: 1rem 0;
+  max-width: 680px;
+}
+
+.de-bloco {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.de-acoes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  margin-top: 0.25rem;
+}
+
+.de-previa {
+  display: grid;
+  gap: 0.75rem;
+  padding: 1rem;
+  border: 1px solid var(--borda);
+  border-radius: 8px;
+  background: var(--painel);
+  color: var(--texto);
+}
+
+.de-previa-completa {
+  margin-top: 1rem;
+  padding: 1.25rem;
+  border: 1px solid var(--ciano);
+  border-radius: 8px;
+  background: var(--painel);
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.de-previa-completa h3 {
+  margin: 0;
+  font-size: 1.05rem;
+  color: var(--ciano);
+}
+
+.comparativo-backup {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  padding: 0.75rem;
+  background: var(--fundo);
+  border: 1px solid var(--borda);
   border-radius: 6px;
-  background: var(--de-painel, #0d1b24);
-  color: var(--de-texto, #e6f4f8);
-  font: inherit;
+}
+
+.coluna-resumo p {
+  margin: 0.25rem 0 0;
+  font-size: 0.95rem;
+}
+
+.coluna-resumo small {
+  display: block;
+  margin-top: 0.35rem;
+}
+
+.aviso-conflito {
+  margin: 0;
+  padding: 0.6rem 0.8rem;
+  border-radius: 6px;
+  background: rgba(240, 180, 41, 0.15);
+  border: 1px solid #f0b429;
+  color: #f7d070;
+  font-size: 0.9rem;
+}
+
+.opcoes-modo-importacao {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.modo-opcao {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  padding: 0.85rem;
+  border: 1px solid var(--borda);
+  border-radius: 6px;
+  background: var(--fundo);
+  cursor: pointer;
+  transition: border-color 0.15s ease;
+}
+
+.modo-opcao input[type="radio"] {
+  margin-top: 0.25rem;
+  accent-color: var(--ciano);
+  width: 18px;
+  height: 18px;
+}
+
+.modo-opcao.ativa {
+  border-color: var(--ciano);
+  background: rgba(63, 208, 238, 0.05);
+}
+
+.modo-opcao.ativa.perigo {
+  border-color: #e5645a;
+  background: rgba(229, 100, 90, 0.08);
+}
+
+.modo-opcao strong {
+  display: block;
+  font-size: 0.95rem;
+}
+
+.modo-opcao p {
+  margin: 0.2rem 0 0;
+  font-size: 0.85rem;
+}
+
+.configuracao-conflitos {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: 0.85rem;
+  margin-left: 1.5rem;
+  background: var(--painel);
+  border: 1px dashed var(--ciano);
+}
+
+.opcao-radio {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.6rem;
+  font-size: 0.875rem;
   cursor: pointer;
 }
-.de-bloco button:hover:not(:disabled) { border-color: var(--de-destaque, #3ac8e8); }
-.de-bloco button:focus-visible { outline: 2px solid var(--de-destaque, #3ac8e8); outline-offset: 2px; }
-.de-bloco button:disabled { opacity: 0.5; cursor: not-allowed; }
-.de-previa {
-  display: grid; gap: 0.5rem; padding: 0.75rem;
-  border: 1px solid var(--de-borda, #2b6f86); border-radius: 6px;
-  background: var(--de-painel, #0d1b24); color: var(--de-texto, #e6f4f8);
+
+.opcao-radio input[type="radio"] {
+  margin-top: 0.15rem;
+  accent-color: var(--ciano);
 }
-.de-previa p { margin: 0; }
-.de-confirmar { display: flex; gap: 0.5rem; align-items: center; }
-.de-msg { margin: 0; padding: 0.5rem 0.75rem; border-left: 3px solid var(--de-borda, #2b6f86); }
-.de-msg--ok { border-left-color: #4cc38a; }
-.de-msg--erro { border-left-color: #e5645a; }
- 
+
+.alerta-substituicao {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  padding: 0.85rem;
+  margin-left: 1.5rem;
+  background: var(--painel);
+  border: 1px solid #e5645a;
+}
+
+.confirmacao-checkbox {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #ff9b94;
+  cursor: pointer;
+}
+
+.confirmacao-checkbox input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  accent-color: #e5645a;
+}
+
+.acoes-finais {
+  margin-top: 0.5rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid var(--borda);
+}
+
+/* Mensagens de feedback */
+.de-msg {
+  margin: 0;
+  padding: 0.6rem 0.85rem;
+  border-radius: 6px;
+  border-left: 4px solid var(--borda);
+  background: var(--painel);
+  font-size: 0.9rem;
+}
+
+.de-msg--ok {
+  border-left-color: #4cc38a;
+  color: #4cc38a;
+  background: rgba(76, 195, 138, 0.1);
+}
+
+.de-msg--erro {
+  border-left-color: #e5645a;
+  color: #ff857c;
+  background: rgba(229, 100, 90, 0.1);
+}
+
+.de-msg--info {
+  border-left-color: var(--ciano);
+  color: var(--ciano);
+  background: rgba(63, 208, 238, 0.1);
+}
+
+/* Responsividade Mobile */
+@media (max-width: 580px) {
+  .comparativo-backup {
+    grid-template-columns: 1fr;
+    gap: 0.75rem;
+  }
+
+  .configuracao-conflitos,
+  .alerta-substituicao {
+    margin-left: 0;
+  }
+
+  .de-acoes button {
+    width: 100%;
+  }
+}

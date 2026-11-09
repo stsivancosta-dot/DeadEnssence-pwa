@@ -3,12 +3,14 @@ import { Dashboard } from './paginas.jsx';
 import { Anotacoes, Nota } from "./dados/Notas/PaginaNotas.jsx";
 import { Rolagens } from './rolagens/PaginaRolagens.jsx';
 import { Personagens, Ficha } from './fichas/PaginasFichas.jsx';
+import { PaginaBackup } from './compartilhamento/PaginaBackup.jsx';
 
 const ITENS = [
   { id: 'inicio', longo: 'Início', curto: 'Início' },
   { id: 'personagens', longo: 'Personagens', curto: 'Fichas' },
   { id: 'anotacoes', longo: 'Anotações', curto: 'Notas' },
   { id: 'rolagens', longo: 'Rolagens', curto: 'Dados' },
+  { id: 'backup', longo: 'Backup', curto: 'Backup' },
 ];
 
 // Navegação por #/rota: funciona em hospedagem estática (Surge) sem configurar fallback.
@@ -32,6 +34,7 @@ export default function App() {
   if (secao === 'personagens') pagina = sub ? <Ficha key={sub} id={sub} aba={rota[2]} /> : <Personagens />;
   else if (secao === 'anotacoes') pagina = sub ? <Nota key={sub} id={sub} /> : <Anotacoes />;
   else if (secao === 'rolagens') pagina = <Rolagens />;
+  else if (secao === 'backup') pagina = <PaginaBackup />;
 
   return (
     <div className="app">
@@ -45,7 +48,7 @@ export default function App() {
         ))}
       </nav>
       <main className="conteudo">{pagina}</main>
-      <footer className="rodape">As fichas ficam salvas só neste dispositivo; não há sincronização entre aparelhos.</footer>
+      <footer className="rodape">Os dados ficam salvos localmente neste dispositivo; faça backups periódicos para transferir ou guardar seus dados.</footer>
     </div>
   );
 }

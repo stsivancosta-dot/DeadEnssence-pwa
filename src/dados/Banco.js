@@ -1,9 +1,13 @@
 // Acesso ao IndexedDB. A interface só usa estas funções, nunca o IndexedDB direto.
+import { criarArmazenamentoIndexedDB } from '../compartilhamento/Backup.js';
+import { obterTodasPreferencias, salvarTodasPreferencias } from './preferencias.js';
+
 const NOME_BANCO = 'deadessence';
 const VERSAO = 3;
 export const STORE_PERSONAGENS = 'personagens';
 export const STORE_ROLAGENS = 'rolagens';
 export const STORE_ANOTACOES = 'anotacoes';
+export const TODAS_AS_STORES = [STORE_PERSONAGENS, STORE_ROLAGENS, STORE_ANOTACOES];
 
 let promessaBanco = null;
 
@@ -76,6 +80,16 @@ export const obterAnotacao = (id) => executar(STORE_ANOTACOES, 'readonly', (s) =
 export const criarAnotacao = async (n) => { await executar(STORE_ANOTACOES, 'readwrite', (s) => s.add(n)); return n; };
 export const salvarAnotacao = async (n) => { await executar(STORE_ANOTACOES, 'readwrite', (s) => s.put(n)); return n; };
 export const excluirAnotacao = (id) => executar(STORE_ANOTACOES, 'readwrite', (s) => s.delete(id));
+
+// Retorna a ponte completa de armazenamento para o módulo de backup
+export async function obterArmazenamentoGeral() {
+  const db = await abrirBanco();
+  const stores = Array.from(db.objectStoreNames);
+  return criarArmazenamentoIndexedDB(db, stores, {
+    lerPreferencias: obterTodasPreferencias,
+    gravarPreferencias: salvarTodasPreferencias,
+  });
+}
 
 // Pede ao navegador para não apagar os dados por falta de espaço. Não é garantia absoluta.
 export async function pedirPersistencia() {

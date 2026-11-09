@@ -6,13 +6,14 @@
 
 export const FORMATO_FICHA = 'deadessence-ficha';
 export const FORMATO_BACKUP = 'deadessence-backup';
+export const APLICATIVO_NOME = 'DeadEssence RPG';
 export const VERSAO_FORMATO = 1;
 
 // Ajuste se a ficha do app guardar o nome em outro campo.
 export const CAMPO_NOME = 'nome';
 
-// Limite técnico para impedir que um arquivo gigante trave o celular.
-export const TAMANHO_MAXIMO_BYTES = 5 * 1024 * 1024;
+// Limite técnico para impedir que um arquivo gigante trave o celular (25 MB).
+export const TAMANHO_MAXIMO_BYTES = 25 * 1024 * 1024;
 
 const CHAVES_PERIGOSAS = new Set(['__proto__', 'constructor', 'prototype']);
 const PROFUNDIDADE_MAXIMA = 30;
@@ -49,7 +50,7 @@ function conferirVersao(envelope) {
     return 'O arquivo não informa uma versão de formato válida.';
   }
   if (envelope.versao > VERSAO_FORMATO) {
-    return 'O arquivo foi criado por uma versão mais nova do app. Atualize o app e tente de novo.';
+    return 'O arquivo foi criado por uma versão mais nova do aplicativo. Atualize o DeadEssence RPG para importar este arquivo.';
   }
   return null;
 }
@@ -58,7 +59,13 @@ function conferirVersao(envelope) {
 
 export function montarEnvelopeFicha(ficha, agora = new Date()) {
   const { id, ...dados } = ficha; // o id é local; quem importar recebe um id novo
-  return { formato: FORMATO_FICHA, versao: VERSAO_FORMATO, exportadoEm: agora.toISOString(), personagem: dados };
+  return {
+    formato: FORMATO_FICHA,
+    aplicativo: APLICATIVO_NOME,
+    versao: VERSAO_FORMATO,
+    exportadoEm: agora.toISOString(),
+    personagem: dados,
+  };
 }
 
 export function validarEnvelopeFicha(texto) {
@@ -90,25 +97,31 @@ export function validarEnvelopeFicha(texto) {
 // ---------- Backup completo ----------
 
 export function montarEnvelopeBackup(dados, preferencias, agora = new Date()) {
-  const env = { formato: FORMATO_BACKUP, versao: VERSAO_FORMATO, exportadoEm: agora.toISOString(), dados };
+  const env = {
+    formato: FORMATO_BACKUP,
+    aplicativo: APLICATIVO_NOME,
+    versao: VERSAO_FORMATO,
+    exportadoEm: agora.toISOString(),
+    dados,
+  };
   if (preferencias) env.preferencias = preferencias;
   return env;
 }
 
-// storesPermitidas: nomes das listas de dados que o app realmente possui.
-export function validarEnvelopeBackup(texto, storesPermitidas) {
+// storesPermitidas: nomes das listas de dados que o app reconhece no momento.
+export function validarEnvelopeBackup(texto, storesPermitidas = []) {
   const lido = interpretarJson(texto);
   if (!lido.ok) return lido;
   const env = lido.dados;
-  if (!ehObjetoSimples(env) || env.formato !== FORMATO_BACKUP) {
+  if (!ehObjetoSimples(env) || (env.formato !== FORMATO_BACKUP && env.aplicativo !== APLICATIVO_NOME)) {
     if (ehObjetoSimples(env) && env.formato === FORMATO_FICHA) {
       return { ok: false, erro: 'Este arquivo é uma ficha individual, não um backup completo. Importe-o na lista de personagens.' };
     }
-    return { ok: false, erro: 'Este arquivo não é um backup do DeadEssence.' };
+    return { ok: false, erro: 'Este arquivo não pertence ao formato de backup do DeadEssence RPG.' };
   }
   const erroVersao = conferirVersao(env);
   if (erroVersao) return { ok: false, erro: erroVersao };
-  if (!ehObjetoSimples(env.dados)) return { ok: false, erro: 'O backup não contém dados.' };
+  if (!ehObjetoSimples(env.dados)) return { ok: false, erro: 'O backup não contém uma estrutura de dados válida.' };
 
   let dados;
   let preferencias;
@@ -121,13 +134,29 @@ export function validarEnvelopeBackup(texto, storesPermitidas) {
   } catch (e) {
     return { ok: false, erro: e.message };
   }
+
+  const dadosValidados = {};
+  const extras = [];
+
   for (const [nome, registros] of Object.entries(dados)) {
-    if (!storesPermitidas.includes(nome)) {
-      return { ok: false, erro: `O backup contém dados que este app não reconhece ("${nome}").` };
-    }
     if (!Array.isArray(registros) || !registros.every(ehObjetoSimples)) {
-      return { ok: false, erro: `Os dados de "${nome}" estão em formato inválido.` };
+      return { ok: false, erro: `Os dados da categoria "${nome}" estão em formato inválido.` };
+    }
+    // Preserva todas as stores válidas; sinaliza se houver alguma não conhecida pela versão atual
+    if (storesPermitidas.length === 0 || storesPermitidas.includes(nome)) {
+      dadosValidados[nome] = registros;
+    } else {
+      extras.push(nome);
     }
   }
-  return { ok: true, dados, preferencias, exportadoEm: typeof env.exportadoEm === 'string' ? env.exportadoEm : null };
+
+  return {
+    ok: true,
+    dados: dadosValidados,
+    extras,
+    preferencias,
+    versao: env.versao,
+    aplicativo: env.aplicativo || APLICATIVO_NOME,
+    exportadoEm: typeof env.exportadoEm === 'string' ? env.exportadoEm : null,
+  };
 }
