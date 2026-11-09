@@ -3,10 +3,10 @@ import {
   GRAUS_PROFICIENCIA, LIMITE_DADOS, MAX_FLUXO, TIPOS_DADO,
   rolagemLivre, rolagemTeste, somaFluxo, totalDoTeste,
 } from './dados.js';
-import { atualizarRolagem, limparRolagens, listarFichas, listarRolagens, registrarRolagem } from '../dados/banco.js';
+import { atualizarRolagem, limparRolagens, listarFichas, listarRolagens, registrarRolagem } from '../dados/Banco.js';
 import { PROFICIENCIAS, grauPorId } from '../modelos/proficiencias.js';
 import { definirHistorico, historicoLigado } from '../dados/preferencias.js';
-import { novoId } from '../modelos/ficha.js';
+import { novoId } from '../modelos/Ficha.js';
 import './rolagens.css';
 
 const VISIVEIS = 20;
